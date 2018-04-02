@@ -28,7 +28,7 @@ class Paginator(object):
 
     def validate_number(self, number):
         """
-        Validates the given 1-based page number.
+        验证给定的基于1的页码。
         """
         try:
             number = int(number)
@@ -45,7 +45,7 @@ class Paginator(object):
 
     def page(self, number):
         """
-        Returns a Page object for the given 1-based page number.
+        返回给定的基于1的页码的页面对象。
         """
         number = self.validate_number(number)
         bottom = (number - 1) * self.per_page
@@ -56,16 +56,14 @@ class Paginator(object):
 
     def _get_page(self, *args, **kwargs):
         """
-        Returns an instance of a single page.
-
-        This hook can be used by subclasses to use an alternative to the
-        standard :cls:`Page` object.
+        返回单个页面的实例。
+        这个钩子可以被子类用来替代标准：cls：Page对象。
         """
         return Page(*args, **kwargs)
 
     def _get_count(self):
         """
-        Returns the total number of objects, across all pages.
+        返回所有页面上的对象总数。
         """
         if self._count is None:
             try:

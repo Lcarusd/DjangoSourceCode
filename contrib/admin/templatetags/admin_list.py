@@ -30,7 +30,7 @@ DOT = '.'
 @register.simple_tag
 def paginator_number(cl, i):
     """
-    Generates an individual page index link in a paginated list.
+    在分页列表中生成单个页面索引链接。
     """
     if i == DOT:
         return '... '
@@ -39,32 +39,34 @@ def paginator_number(cl, i):
     else:
         return format_html('<a href="{}"{}>{}</a> ',
                            cl.get_query_string({PAGE_VAR: i}),
-                           mark_safe(' class="end"' if i == cl.paginator.num_pages - 1 else ''),
+                           mark_safe(' class="end"' if i ==
+                                     cl.paginator.num_pages - 1 else ''),
                            i + 1)
 
 
 @register.inclusion_tag('admin/pagination.html')
 def pagination(cl):
     """
-    Generates the series of links to the pages in a paginated list.
+    在分页列表中生成一系列指向页面的链接。
     """
     paginator, page_num = cl.paginator, cl.page_num
 
-    pagination_required = (not cl.show_all or not cl.can_show_all) and cl.multi_page
+    pagination_required = (
+        not cl.show_all or not cl.can_show_all) and cl.multi_page
     if not pagination_required:
         page_range = []
     else:
         ON_EACH_SIDE = 3
         ON_ENDS = 2
 
-        # If there are 10 or fewer pages, display links to every page.
-        # Otherwise, do some fancy
+        # 如果有10页或更少的页面，则显示每个页面的链接。
+        # 否则，做一些花样
         if paginator.num_pages <= 10:
             page_range = range(paginator.num_pages)
         else:
-            # Insert "smart" pagination links, so that there are always ON_ENDS
-            # links at either end of the list of pages, and there are always
-            # ON_EACH_SIDE links at either end of the "current page" link.
+            # 插入“智能”分页链接，
+            # 以便在页面列表的任一端总是有ON_ENDS链接，
+            # 并且在“当前页面”链接的任一端总是有ON_EACH_SIDE链接。
             page_range = []
             if page_num > (ON_EACH_SIDE + ON_ENDS):
                 page_range.extend(range(0, ON_ENDS))
@@ -73,9 +75,11 @@ def pagination(cl):
             else:
                 page_range.extend(range(0, page_num + 1))
             if page_num < (paginator.num_pages - ON_EACH_SIDE - ON_ENDS - 1):
-                page_range.extend(range(page_num + 1, page_num + ON_EACH_SIDE + 1))
+                page_range.extend(
+                    range(page_num + 1, page_num + ON_EACH_SIDE + 1))
                 page_range.append(DOT)
-                page_range.extend(range(paginator.num_pages - ON_ENDS, paginator.num_pages))
+                page_range.extend(
+                    range(paginator.num_pages - ON_ENDS, paginator.num_pages))
             else:
                 page_range.extend(range(page_num + 1, paginator.num_pages))
 
@@ -92,7 +96,7 @@ def pagination(cl):
 
 def result_headers(cl):
     """
-    Generates the list column headers.
+    生成列表列标题。
     """
     ordering_field_columns = cl.get_ordering_field_columns()
     for i, field_name in enumerate(cl.list_display):
@@ -115,7 +119,7 @@ def result_headers(cl):
 
             admin_order_field = getattr(attr, "admin_order_field", None)
             if not admin_order_field:
-                # Not sortable
+                # 不可排序
                 yield {
                     "text": text,
                     "class_attrib": format_html(' class="column-{}"', field_name),
@@ -129,7 +133,7 @@ def result_headers(cl):
         new_order_type = 'asc'
         sort_priority = 0
         sorted = False
-        # Is it currently being sorted on?
+        # 它目前正在排序吗？
         if i in ordering_field_columns:
             sorted = True
             order_type = ordering_field_columns.get(i).lower()
@@ -141,7 +145,8 @@ def result_headers(cl):
         o_list_primary = []  # URL for making this field the primary sort
         o_list_remove = []  # URL for removing this field from sort
         o_list_toggle = []  # URL for toggling order type for this field
-        make_qs_param = lambda t, n: ('-' if t == 'desc' else '') + str(n)
+
+        def make_qs_param(t, n): return ('-' if t == 'desc' else '') + str(n)
 
         for j, ot in ordering_field_columns.items():
             if j == i:  # Same column
@@ -240,7 +245,8 @@ def items_for_result(cl, result, form):
             except NoReverseMatch:
                 link_or_text = result_repr
             else:
-                url = add_preserved_filters({'preserved_filters': cl.preserved_filters, 'opts': cl.opts}, url)
+                url = add_preserved_filters(
+                    {'preserved_filters': cl.preserved_filters, 'opts': cl.opts}, url)
                 # Convert the pk to something that can be used in Javascript.
                 # Problem cases are long ints (23L) and non-ASCII strings.
                 if cl.to_field:
@@ -328,7 +334,8 @@ def date_hierarchy(cl):
     if cl.date_hierarchy:
         field_name = cl.date_hierarchy
         field = cl.opts.get_field(field_name)
-        dates_or_datetimes = 'datetimes' if isinstance(field, models.DateTimeField) else 'dates'
+        dates_or_datetimes = 'datetimes' if isinstance(
+            field, models.DateTimeField) else 'dates'
         year_field = '%s__year' % field_name
         month_field = '%s__month' % field_name
         day_field = '%s__day' % field_name
@@ -337,7 +344,7 @@ def date_hierarchy(cl):
         month_lookup = cl.params.get(month_field)
         day_lookup = cl.params.get(day_field)
 
-        link = lambda filters: cl.get_query_string(filters, [field_generic])
+        def link(filters): return cl.get_query_string(filters, [field_generic])
 
         if not (year_lookup or month_lookup or day_lookup):
             # select appropriate start level
@@ -350,7 +357,8 @@ def date_hierarchy(cl):
                         month_lookup = date_range['first'].month
 
         if year_lookup and month_lookup and day_lookup:
-            day = datetime.date(int(year_lookup), int(month_lookup), int(day_lookup))
+            day = datetime.date(int(year_lookup), int(
+                month_lookup), int(day_lookup))
             return {
                 'show': True,
                 'back': {
@@ -360,7 +368,8 @@ def date_hierarchy(cl):
                 'choices': [{'title': capfirst(formats.date_format(day, 'MONTH_DAY_FORMAT'))}]
             }
         elif year_lookup and month_lookup:
-            days = cl.queryset.filter(**{year_field: year_lookup, month_field: month_lookup})
+            days = cl.queryset.filter(
+                **{year_field: year_lookup, month_field: month_lookup})
             days = getattr(days, dates_or_datetimes)(field_name, 'day')
             return {
                 'show': True,
@@ -388,7 +397,8 @@ def date_hierarchy(cl):
                 } for month in months]
             }
         else:
-            years = getattr(cl.queryset, dates_or_datetimes)(field_name, 'year')
+            years = getattr(cl.queryset, dates_or_datetimes)(
+                field_name, 'year')
             return {
                 'show': True,
                 'choices': [{

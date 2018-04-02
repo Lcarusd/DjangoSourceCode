@@ -10,9 +10,8 @@ from django.utils.six.moves.urllib.parse import urlparse
 
 def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIELD_NAME):
     """
-    Decorator for views that checks that the user passes the given test,
-    redirecting to the log-in page if necessary. The test should be a callable
-    that takes the user object and returns True if the user passes.
+    装饰器用于检查用户是否通过了给定测试的视图，必要时重定向到登录页面。 
+    测试应该是一个可调用的用户对象，如果用户通过，则返回True。
     """
 
     def decorator(view_func):
@@ -38,8 +37,7 @@ def user_passes_test(test_func, login_url=None, redirect_field_name=REDIRECT_FIE
 
 def login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
     """
-    Decorator for views that checks that the user is logged in, redirecting
-    to the log-in page if necessary.
+    Decorator用于检查用户是否已登录的视图，必要时重定向到登录页面。
     """
     actual_decorator = user_passes_test(
         lambda u: u.is_authenticated(),
