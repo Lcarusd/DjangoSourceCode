@@ -15,27 +15,30 @@ def _make_id(target):
     if hasattr(target, '__func__'):
         return (id(target.__self__), id(target.__func__))
     return id(target)
+
+
 NONE_ID = _make_id(None)
 
-# A marker for caching
+# 缓存标记
 NO_RECEIVERS = object()
 
 
 class Signal(object):
     """
-    Base class for all signals
+    所有信号的基类
 
-    Internal attributes:
+    内部属性：
 
         receivers
             { receiverkey (id) : weakref(receiver) }
     """
+
     def __init__(self, providing_args=None, use_caching=False):
         """
-        Create a new signal.
+        创建一个新的信号。
 
-        providing_args
-            A list of the arguments this signal can pass along in a send() call.
+        providing_args
+        这个信号可以在send（）调用中传递的参数列表。
         """
         self.receivers = []
         if providing_args is None:
@@ -43,46 +46,43 @@ class Signal(object):
         self.providing_args = set(providing_args)
         self.lock = threading.Lock()
         self.use_caching = use_caching
-        # For convenience we create empty caches even if they are not used.
-        # A note about caching: if use_caching is defined, then for each
-        # distinct sender we cache the receivers that sender has in
-        # 'sender_receivers_cache'. The cache is cleaned when .connect() or
-        # .disconnect() is called and populated on send().
+
+        # 为了方便起见，我们创建了空的缓存，即使它们没有被使用。
+        # 关于缓存的说明：
+        # 如果定义了use_caching，那么对于每个不同的发件人，我们会缓存发件人在'sender_receivers_cache'中的接收者。
+        # 当调用.connect（）或.disconnect（）并在send（）上填充时，将清除缓存。
         self.sender_receivers_cache = weakref.WeakKeyDictionary() if use_caching else {}
         self._dead_receivers = False
 
     def connect(self, receiver, sender=None, weak=True, dispatch_uid=None):
         """
-        Connect receiver to sender for signal.
+        将接收器连接到发送器以获取信号
 
-        Arguments:
+        参数：
+            接收器
+                接收信号的函数或实例方法。
+                接收器必须是可排列的对象。
 
-            receiver
-                A function or an instance method which is to receive signals.
-                Receivers must be hashable objects.
+                如果弱为真，则接收器必须弱参考。
 
-                If weak is True, then receiver must be weak referenceable.
+                接收者必须能够接受关键字参数。
 
-                Receivers must be able to accept keyword arguments.
+                如果一个接收器与一个dispatch_uid参数连接，
+                如果另一个接收器已经与dispatch_uid连接，
+                它将不会被添加。
 
-                If a receiver is connected with a dispatch_uid argument, it
-                will not be added if another receiver was already connected
-                with that dispatch_uid.
+            发送器
+                接收者应该回复的发送者。 
+                必须是Signal类型或None才能接收来自任何发件人的事件。
 
-            sender
-                The sender to which the receiver should respond. Must either be
-                of type Signal, or None to receive events from any sender.
+            弱
+                是否对接收器使用弱引用。 
+                默认情况下，模块将尝试对接收器对象使用弱引用。 
+                如果此参数为false，则会使用强参考。
 
-            weak
-                Whether to use weak references to the receiver. By default, the
-                module will attempt to use weak references to the receiver
-                objects. If this parameter is false, then strong references will
-                be used.
-
-            dispatch_uid
-                An identifier used to uniquely identify a particular instance of
-                a receiver. This will usually be a string, though it may be
-                anything hashable.
+            dispatch_uid
+                用于唯一标识接收者的特定实例的标识符。 
+                这通常是一个字符串，尽管它可能是任何可散列的。
         """
         from django.conf import settings
 
