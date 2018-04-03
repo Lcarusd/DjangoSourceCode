@@ -86,11 +86,11 @@ class Signal(object):
         """
         from django.conf import settings
 
-        # If DEBUG is on, check that we got a good receiver
+        # 如果DEBUG开启，请检查我们是否有良好的接收器
         if settings.configured and settings.DEBUG:
             assert callable(receiver), "Signal receivers must be callable."
 
-            # Check for **kwargs
+            # 检查** kwargs
             if not func_accepts_kwargs(receiver):
                 raise ValueError("Signal receivers must accept keyword arguments (**kwargs).")
 
@@ -102,7 +102,7 @@ class Signal(object):
         if weak:
             ref = weakref.ref
             receiver_object = receiver
-            # Check for bound methods
+            # 检查绑定的方法  
             if hasattr(receiver, '__self__') and hasattr(receiver, '__func__'):
                 ref = WeakMethod
                 receiver_object = receiver.__self__
