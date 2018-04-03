@@ -38,9 +38,7 @@ EMPTY_CHANGELIST_VALUE = ugettext_lazy('(None)')
 
 
 class ChangeList(object):
-    def __init__(self, request, model, list_display, list_display_links,
-            list_filter, date_hierarchy, search_fields, list_select_related,
-            list_per_page, list_max_show_all, list_editable, model_admin):
+    def __init__(self, request, model, list_display, list_display_links, list_filter, date_hierarchy, search_fields, list_select_related, list_per_page, list_max_show_all, list_editable, model_admin):
         self.model = model
         self.opts = model._meta
         self.lookup_opts = self.opts
@@ -65,7 +63,8 @@ class ChangeList(object):
         self.is_popup = IS_POPUP_VAR in request.GET
         to_field = request.GET.get(TO_FIELD_VAR)
         if to_field and not model_admin.to_field_allowed(request, to_field):
-            raise DisallowedModelAdminToField("The field %s cannot be referenced." % to_field)
+            raise DisallowedModelAdminToField(
+                "The field %s cannot be referenced." % to_field)
         self.to_field = to_field
         self.params = dict(request.GET.items())
         if PAGE_VAR in self.params:
@@ -107,7 +106,8 @@ class ChangeList(object):
 
         for key, value in lookup_params.items():
             if not self.model_admin.lookup_allowed(key, value):
-                raise DisallowedModelAdminLookup("Filtering by %s not allowed" % key)
+                raise DisallowedModelAdminLookup(
+                    "Filtering by %s not allowed" % key)
 
         filter_specs = []
         if self.list_filter:
@@ -115,7 +115,7 @@ class ChangeList(object):
                 if callable(list_filter):
                     # This is simply a custom list filter class.
                     spec = list_filter(request, lookup_params,
-                        self.model, self.model_admin)
+                                       self.model, self.model_admin)
                 else:
                     field_path = None
                     if isinstance(list_filter, (tuple, list)):
@@ -128,9 +128,10 @@ class ChangeList(object):
                         field, field_list_filter_class = list_filter, FieldListFilter.create
                     if not isinstance(field, models.Field):
                         field_path = field
-                        field = get_fields_from_path(self.model, field_path)[-1]
+                        field = get_fields_from_path(
+                            self.model, field_path)[-1]
                     spec = field_list_filter_class(field, request, lookup_params,
-                        self.model, self.model_admin, field_path=field_path)
+                                                   self.model, self.model_admin, field_path=field_path)
                     # Check if we need to use distinct()
                     use_distinct = (use_distinct or
                                     lookup_needs_distinct(self.lookup_opts,
@@ -151,7 +152,8 @@ class ChangeList(object):
                                 lookup_needs_distinct(self.lookup_opts, key))
             return filter_specs, bool(filter_specs), lookup_params, use_distinct
         except FieldDoesNotExist as e:
-            six.reraise(IncorrectLookupParameters, IncorrectLookupParameters(e), sys.exc_info()[2])
+            six.reraise(IncorrectLookupParameters,
+                        IncorrectLookupParameters(e), sys.exc_info()[2])
 
     def get_query_string(self, new_params=None, remove=None):
         if new_params is None:
@@ -172,7 +174,8 @@ class ChangeList(object):
         return '?%s' % urlencode(sorted(p.items()))
 
     def get_results(self, request):
-        paginator = self.model_admin.get_paginator(request, self.queryset, self.list_per_page)
+        paginator = self.model_admin.get_paginator(
+            request, self.queryset, self.list_per_page)
         # Get the number of objects, with admin filters applied.
         result_count = paginator.count
 
@@ -203,7 +206,8 @@ class ChangeList(object):
         self.show_full_result_count = self.model_admin.show_full_result_count
         # Admin actions are shown if there is at least one entry
         # or if entries are not counted because show_full_result_count is disabled
-        self.show_admin_actions = not self.show_full_result_count or bool(full_result_count)
+        self.show_admin_actions = not self.show_full_result_count or bool(
+            full_result_count)
         self.full_result_count = full_result_count
         self.result_list = result_list
         self.can_show_all = can_show_all

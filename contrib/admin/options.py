@@ -59,8 +59,7 @@ HORIZONTAL, VERTICAL = 1, 2
 
 
 def get_content_type_for_model(obj):
-    # Since this module gets imported in the application's root package,
-    # it cannot import models from other applications at the module level.
+    # 由于此模块被导入到应用程序的根包中，因此无法从模块级别的其他应用程序导入模型。
     from django.contrib.contenttypes.models import ContentType
     return ContentType.objects.get_for_model(obj, for_concrete_model=False)
 
@@ -72,9 +71,8 @@ def get_ul_class(radio_style):
 class IncorrectLookupParameters(Exception):
     pass
 
-# Defaults for formfield_overrides. ModelAdmin subclasses can change this
-# by adding to ModelAdmin.formfield_overrides.
-
+# formfield_overrides的默认值。 
+# ModelAdmin子类可以通过添加到ModelAdmin.formfield_overrides来更改此类。
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {
         'form_class': forms.SplitDateTimeField,
@@ -96,7 +94,7 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 
 class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
-    """Functionality common to both ModelAdmin and InlineAdmin."""
+    """ModelAdmin和InlineAdmin通用的功能。"""
 
     raw_id_fields = ()
     fields = None
@@ -156,15 +154,14 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
 
     def formfield_for_dbfield(self, db_field, **kwargs):
         """
-        Hook for specifying the form Field instance for a given database Field
-        instance.
+        钩子用于为给定数据库字段实例指定表单Field实例。
 
-        If kwargs are given, they're passed to the form Field's constructor.
+        如果给出了kwargs，它们被传递给Field的构造函数。
         """
         request = kwargs.pop("request", None)
 
-        # If the field specifies choices, we don't need to look for special
-        # admin widgets - we just need to use a select widget of some kind.
+        # 如果该字段指定了选择，我们不需要寻找特殊的管理小部件 
+        # -- 我们只需要使用某种选择的小部件。
         if db_field.choices:
             return self.formfield_for_choice_field(db_field, request, **kwargs)
 
@@ -504,14 +501,12 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
 
     def has_change_permission(self, request, obj=None):
         """
-        Returns True if the given request has permission to change the given
-        Django model instance, the default implementation doesn't examine the
-        `obj` parameter.
+        如果给定的请求有权改变给定的Django模型实例，则返回True，
+        默认实现不检查`obj`参数。
 
-        Can be overridden by the user in subclasses. In such case it should
-        return True if the given request has permission to change the `obj`
-        model instance. If `obj` is None, this should return True if the given
-        request has permission to change *any* object of the given type.
+        可以由用户在子类中覆盖。 
+        在这种情况下，如果给定的请求有更改`obj`模型实例的权限，它应该返回True。 
+        如果`obj`是None，那么如果给定的请求有权改变给定类型的任何*对象，则返回True。
         """
         opts = self.opts
         codename = get_permission_codename('change', opts)
@@ -548,7 +543,7 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
 
 @python_2_unicode_compatible
 class ModelAdmin(BaseModelAdmin):
-    "Encapsulates all admin options and functionality for a given model."
+    "封装给定模型的所有管理选项和功能。"
 
     list_display = ('__str__',)
     list_display_links = ()
@@ -565,7 +560,7 @@ class ModelAdmin(BaseModelAdmin):
     preserve_filters = True
     inlines = []
 
-    # Custom templates (designed to be over-ridden in subclasses)
+    # 自定义模板（设计为在子类中被覆盖）
     add_form_template = None
     change_form_template = None
     change_list_template = None
