@@ -2,13 +2,14 @@ from importlib import import_module
 import warnings
 
 from django.core.urlresolvers import (RegexURLPattern,
-    RegexURLResolver, LocaleRegexURLResolver)
+                                      RegexURLResolver, LocaleRegexURLResolver)
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import six
 from django.utils.deprecation import RemovedInDjango110Warning
 
 
-__all__ = ['handler400', 'handler403', 'handler404', 'handler500', 'include', 'patterns', 'url']
+__all__ = ['handler400', 'handler403', 'handler404',
+           'handler500', 'include', 'patterns', 'url']
 
 handler400 = 'django.views.defaults.bad_request'
 handler403 = 'django.views.defaults.permission_denied'
@@ -23,7 +24,8 @@ def include(arg, namespace=None, app_name=None):
     if isinstance(arg, tuple):
         # callable returning a namespace hint
         if namespace:
-            raise ImproperlyConfigured('Cannot override the namespace for a dynamic module that provides a namespace')
+            raise ImproperlyConfigured(
+                'Cannot override the namespace for a dynamic module that provides a namespace')
         urlconf_module, app_name, namespace = arg
     else:
         # No namespace hint - use manually provided namespace
@@ -65,7 +67,7 @@ def patterns(prefix, *args):
 
 def url(regex, view, kwargs=None, name=None, prefix=''):
     if isinstance(view, (list, tuple)):
-        # For include(...) processing.
+        # include(...) 处理。
         urlconf_module, app_name, namespace = view
         return RegexURLResolver(regex, urlconf_module, kwargs, app_name=app_name, namespace=namespace)
     else:
@@ -77,7 +79,8 @@ def url(regex, view, kwargs=None, name=None, prefix=''):
                 RemovedInDjango110Warning, stacklevel=2
             )
             if not view:
-                raise ImproperlyConfigured('Empty URL pattern view name not permitted (for pattern %r)' % regex)
+                raise ImproperlyConfigured(
+                    'Empty URL pattern view name not permitted (for pattern %r)' % regex)
             if prefix:
                 view = prefix + '.' + view
         return RegexURLPattern(regex, view, kwargs, name)
