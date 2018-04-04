@@ -23,7 +23,8 @@ from django.utils.six.moves.urllib.parse import (
 )
 
 RAISE_ERROR = object()
-host_validation_re = re.compile(r"^([a-z0-9.-]+|\[[a-f0-9]*:[a-f0-9:]+\])(:\d+)?$")
+host_validation_re = re.compile(
+    r"^([a-z0-9.-]+|\[[a-f0-9]*:[a-f0-9:]+\])(:\d+)?$")
 
 
 class UnreadablePostError(IOError):
@@ -40,16 +41,16 @@ class RawPostDataException(Exception):
 
 
 class HttpRequest(object):
-    """A basic HTTP request."""
+    """基本的HTTP请求。"""
 
-    # The encoding used in GET/POST dicts. None means use default setting.
+    # GET/POST字典中使用的编码。 None意味着使用默认设置。
     _encoding = None
     _upload_handlers = []
 
     def __init__(self):
-        # WARNING: The `WSGIRequest` subclass doesn't call `super`.
-        # Any variable assignment made here should also happen in
-        # `WSGIRequest.__init__()`.
+    
+        # 警告：`WSGIRequest`子类不会调用`super`。
+        # 这里所做的任何变量赋值都应该在`WSGIRequest .__init__()`中发生。
 
         self.GET = QueryDict(mutable=True)
         self.POST = QueryDict(mutable=True)
@@ -71,21 +72,21 @@ class HttpRequest(object):
         )
 
     def get_host(self):
-        """Returns the HTTP host using the environment or request headers."""
-        # We try three options, in order of decreasing preference.
+        """使用环境或请求标头返回HTTP主机。"""
+        # 我们尝试三种选择，按照优先顺序递减的顺序。
         if settings.USE_X_FORWARDED_HOST and (
                 'HTTP_X_FORWARDED_HOST' in self.META):
             host = self.META['HTTP_X_FORWARDED_HOST']
         elif 'HTTP_HOST' in self.META:
             host = self.META['HTTP_HOST']
         else:
-            # Reconstruct the host using the algorithm from PEP 333.
+            # 使用来自PEP 333的算法重建主机。
             host = self.META['SERVER_NAME']
             server_port = str(self.META['SERVER_PORT'])
             if server_port != ('443' if self.is_secure() else '80'):
                 host = '%s:%s' % (host, server_port)
 
-        # Allow variants of localhost if ALLOWED_HOSTS is empty and DEBUG=True.
+        # 如果ALLOWED_HOSTS为空并且DEBUG = True，则允许本地主机的变体。
         allowed_hosts = settings.ALLOWED_HOSTS
         if settings.DEBUG and not allowed_hosts:
             allowed_hosts = ['localhost', '127.0.0.1', '[::1]']
