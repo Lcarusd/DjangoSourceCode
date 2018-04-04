@@ -48,7 +48,8 @@ class HttpRequest(object):
     _upload_handlers = []
 
     def __init__(self):
-    
+
+
         # 警告：`WSGIRequest`子类不会调用`super`。
         # 这里所做的任何变量赋值都应该在`WSGIRequest .__init__()`中发生。
 
@@ -74,8 +75,7 @@ class HttpRequest(object):
     def get_host(self):
         """使用环境或请求标头返回HTTP主机。"""
         # 我们尝试三种选择，按照优先顺序递减的顺序。
-        if settings.USE_X_FORWARDED_HOST and (
-                'HTTP_X_FORWARDED_HOST' in self.META):
+        if settings.USE_X_FORWARDED_HOST and ('HTTP_X_FORWARDED_HOST' in self.META):
             host = self.META['HTTP_X_FORWARDED_HOST']
         elif 'HTTP_HOST' in self.META:
             host = self.META['HTTP_HOST']
@@ -103,8 +103,8 @@ class HttpRequest(object):
             raise DisallowedHost(msg)
 
     def get_full_path(self):
-        # RFC 3986 requires query string arguments to be in the ASCII range.
-        # Rather than crash if this doesn't happen, we encode defensively.
+        # RFC 3986要求查询字符串参数在ASCII范围内。
+        # 如果没有发生，我们不会崩溃，我们会进行防御式编码。
         return '%s%s' % (
             escape_uri_path(self.path),
             ('?' + iri_to_uri(self.META.get('QUERY_STRING', ''))) if self.META.get('QUERY_STRING', '') else ''
@@ -112,9 +112,10 @@ class HttpRequest(object):
 
     def get_signed_cookie(self, key, default=RAISE_ERROR, salt='', max_age=None):
         """
-        Attempts to return a signed cookie. If the signature fails or the
-        cookie has expired, raises an exception... unless you provide the
-        default argument in which case that value will be returned instead.
+        尝试返回已签名的cookie。 
+        
+        如果签名失败或Cookie已过期，则会引发异常...，
+        除非您提供默认参数，否则将返回该值。
         """
         try:
             cookie_value = self.COOKIES[key]
@@ -135,26 +136,21 @@ class HttpRequest(object):
 
     def build_absolute_uri(self, location=None):
         """
-        Builds an absolute URI from the location and the variables available in
-        this request. If no ``location`` is specified, the absolute URI is
-        built on ``request.get_full_path()``. Anyway, if the location is
-        absolute, it is simply converted to an RFC 3987 compliant URI and
-        returned and if location is relative or is scheme-relative (i.e.,
-        ``//example.com/``), it is urljoined to a base URL constructed from the
-        request variables.
+        根据此请求中可用的位置和变量生成绝对URI。 
+        如果没有指定``location``，绝对URI就建立在``request.get_full_path（）``上。 
+        无论如何，如果该位置是绝对位置的，它将被简单地转换为符合RFC 3987的URI并返回，
+        并且如果位置是相对的或者是与方案相关的（即，“example.com /”），
+        则它被链接到从请求变量构造的基本URL。
         """
         if location is None:
-            # Make it an absolute url (but schemeless and domainless) for the
-            # edge case that the path starts with '//'.
+            # 将其设置为路径以'//'开头的边缘情况的绝对url（但无模式和无域）。
             location = '//%s' % self.get_full_path()
         bits = urlsplit(location)
         if not (bits.scheme and bits.netloc):
             current_uri = '{scheme}://{host}{path}'.format(scheme=self.scheme,
                                                            host=self.get_host(),
                                                            path=self.path)
-            # Join the constructed URL with the provided location, which will
-            # allow the provided ``location`` to apply query strings to the
-            # base path as well as override the host, if it begins with //
+            # 使用提供的位置加入构建的URL，这将允许提供的“位置”将查询字符串应用于基本路径，并覆盖主机，如果以//开头//
             location = urljoin(current_uri, location)
         return iri_to_uri(location)
 
@@ -163,18 +159,17 @@ class HttpRequest(object):
 
     @property
     def scheme(self):
-        # First, check the SECURE_PROXY_SSL_HEADER setting.
+        # 首先，检查SECURE_PROXY_SSL_HEADER设置。
         if settings.SECURE_PROXY_SSL_HEADER:
             try:
                 header, value = settings.SECURE_PROXY_SSL_HEADER
             except ValueError:
                 raise ImproperlyConfigured(
-                    'The SECURE_PROXY_SSL_HEADER setting must be a tuple containing two values.'
+                    'SECURE_PROXY_SSL_HEADER设置必须是包含两个值的元组。'
                 )
             if self.META.get(header, None) == value:
                 return 'https'
-        # Failing that, fall back to _get_scheme(), which is a hook for
-        # subclasses to implement.
+        # 否则，回退到_get_scheme（），这是子类实现的钩子。
         return self._get_scheme()
 
     def is_secure(self):
@@ -280,13 +275,9 @@ class HttpRequest(object):
             for f in chain.from_iterable(l[1] for l in self._files.lists()):
                 f.close()
 
-    # File-like and iterator interface.
-    #
-    # Expects self._stream to be set to an appropriate source of bytes by
-    # a corresponding request subclass (e.g. WSGIRequest).
-    # Also when request data has already been read by request.POST or
-    # request.body, self._stream points to a BytesIO instance
-    # containing that data.
+    # 类文件和迭代器接口。
+    # 期望self._stream被相应的请求子类（例如WSGIRequest）设置为适当的字节源。
+    # 当请求数据已被request.POST或request.body读取时，self._stream指向包含该数据的BytesIO实例。
 
     def read(self, *args, **kwargs):
         self._read_started = True
@@ -317,21 +308,18 @@ class HttpRequest(object):
 
 class QueryDict(MultiValueDict):
     """
-    A specialized MultiValueDict which represents a query string.
+    表示查询字符串的专用MultiValueDict。
 
-    A QueryDict can be used to represent GET or POST data. It subclasses
-    MultiValueDict since keys in such data can be repeated, for instance
-    in the data from a form with a <select multiple> field.
+    QueryDict可以用来表示GET或POST数据。 
+    它是MultiValueDict的子类，因为可以重复这些数据中的键，
+    例如来自具有<select multiple>字段的表单中的数据。
 
-    By default QueryDicts are immutable, though the copy() method
-    will always return a mutable copy.
+    默认情况下QueryDicts是不可变的，尽管copy()方法总是返回一个可变副本。
 
-    Both keys and values set on this class are converted from the given encoding
-    (DEFAULT_CHARSET by default) to unicode.
+    在这个类上设置的键和值都是从给定的编码（默认情况下为DEFAULT_CHARSET）转换为unicode。
     """
 
-    # These are both reset in __init__, but is specified here at the class
-    # level so that unpickling will have valid values
+    # 这些都在__init__中重置，但是在类级别处指定，以便取消打印将具有有效值
     _mutable = True
     _encoding = None
 
@@ -342,11 +330,11 @@ class QueryDict(MultiValueDict):
         self.encoding = encoding
         if six.PY3:
             if isinstance(query_string, bytes):
-                # query_string normally contains URL-encoded data, a subset of ASCII.
+                # query_string通常包含URL编码的数据，即ASCII的一个子集。
                 try:
                     query_string = query_string.decode(encoding)
                 except UnicodeDecodeError:
-                    # ... but some user agents are misbehaving :-(
+                    # ...但一些用户代理行为异常:-(
                     query_string = query_string.decode('iso-8859-1')
             for key, value in parse_qsl(query_string or '',
                                         keep_blank_values=True,
@@ -435,15 +423,15 @@ class QueryDict(MultiValueDict):
         return super(QueryDict, self).setdefault(key, default)
 
     def copy(self):
-        """Returns a mutable copy of this object."""
+        """返回此对象的可变副本。"""
         return self.__deepcopy__({})
 
     def urlencode(self, safe=None):
         """
-        Returns an encoded string of all query string arguments.
+        返回所有查询字符串参数的编码字符串。
 
-        :arg safe: Used to specify characters which do not require quoting, for
-            example::
+         ：arg safe：用于指定不需要引用的字符
+             例：
 
                 >>> q = QueryDict('', mutable=True)
                 >>> q['next'] = '/a&b/'
