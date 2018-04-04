@@ -31,9 +31,8 @@ from django.utils.ipv6 import clean_ipv6_address
 from django.utils import six
 from django.utils.itercompat import is_iterable
 
-# When the _meta object was formalized, this exception was moved to
-# django.core.exceptions. It is retained here for backwards compatibility
-# purposes.
+# 当_meta对象被形式化时，这个异常被移动了django.core.exceptions。 
+# 它保留在这里用于向后兼容的目的。
 from django.core.exceptions import FieldDoesNotExist  # NOQA
 
 # Avoid "TypeError: Item in ``from list'' not a string" -- unicode_literals
@@ -57,8 +56,8 @@ class Empty(object):
 class NOT_PROVIDED:
     pass
 
-# The values to use for "blank" in SelectFields. Will be appended to the start
-# of most "choices" lists.
+# 在SelectFields中用于“空白”的值。 
+# 将被附加到大多数“选择”列表的开头。
 BLANK_CHOICE_DASH = [("", "---------")]
 
 
@@ -66,7 +65,7 @@ def _load_field(app_label, model_name, field_name):
     return apps.get_model(app_label, model_name)._meta.get_field(field_name)
 
 
-# A guide to Field parameters:
+# 字段参数指南：
 #
 #   * name:      The name of the field specified in the model.
 #   * attname:   The attribute to use on the model object. This is the same as
