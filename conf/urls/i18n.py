@@ -10,9 +10,8 @@ from django.views.i18n import set_language
 
 def i18n_patterns(prefix, *args):
     """
-    Adds the language code prefix to every URL pattern within this
-    function. This may only be used in the root URLconf, not in an included
-    URLconf.
+    将语言代码前缀添加到此函数中的每个URL模式。 
+    这只能在根URLconf中使用，而不能在包含的URLconf中使用。
     """
     if isinstance(prefix, six.string_types):
         warnings.warn(

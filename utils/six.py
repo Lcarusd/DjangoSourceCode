@@ -1,4 +1,4 @@
-"""Utilities for writing code that runs on Python 2 and 3"""
+"""用于编写在Python 2和3上运行的代码的实用程序"""
 
 # Copyright (c) 2010-2015 Benjamin Peterson
 #

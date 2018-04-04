@@ -22,28 +22,28 @@ def include(arg, namespace=None, app_name=None):
         raise ValueError('Must specify a namespace if specifying app_name.')
 
     if isinstance(arg, tuple):
-        # callable returning a namespace hint
+        # 可调用返回一个命名空间提示
         if namespace:
             raise ImproperlyConfigured(
-                'Cannot override the namespace for a dynamic module that provides a namespace')
+                '无法覆盖提供名称空间的动态模块的名称空间')
         urlconf_module, app_name, namespace = arg
     else:
-        # No namespace hint - use manually provided namespace
+        # 没有名称空间提示 - 使用手动提供的名称空间
         urlconf_module = arg
 
     if isinstance(urlconf_module, six.string_types):
         urlconf_module = import_module(urlconf_module)
     patterns = getattr(urlconf_module, 'urlpatterns', urlconf_module)
 
-    # Make sure we can iterate through the patterns (without this, some
-    # testcases will break).
+    # 确保我们可以遍历模式（没有这个，一些测试用例会中断）。
     if isinstance(patterns, (list, tuple)):
         for url_pattern in patterns:
-            # Test if the LocaleRegexURLResolver is used within the include;
-            # this should throw an error since this is not allowed!
+
+            # 测试包含中是否使用了LocaleRegexURLResolver;
+            # 这应该抛出一个错误，因为这是不允许的！
             if isinstance(url_pattern, LocaleRegexURLResolver):
                 raise ImproperlyConfigured(
-                    'Using i18n_patterns in an included URLconf is not allowed.')
+                    '在包含的URLconf中使用i18n_patterns是不允许的。')
 
     return (urlconf_module, app_name, namespace)
 
