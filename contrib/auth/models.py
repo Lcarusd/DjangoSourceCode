@@ -19,8 +19,7 @@ from django.utils.translation import ugettext_lazy as _
 
 def update_last_login(sender, user, **kwargs):
     """
-    A signal receiver which updates the last_login date for
-    the user logging in.
+    信号接收器更新用户登录的last_login日期。
     """
     user.last_login = timezone.now()
     user.save(update_fields=['last_login'])
