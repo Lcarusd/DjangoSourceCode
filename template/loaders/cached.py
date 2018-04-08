@@ -1,6 +1,5 @@
 """
-Wrapper class that takes a list of template loaders as an argument and attempts
-to load templates from them in order, caching the result.
+包装类，将模板加载器列表作为参数，并尝试从它们中依次加载模板，缓存结果。
 """
 
 import hashlib
@@ -42,7 +41,8 @@ class Loader(BaseLoader):
                 except TemplateDoesNotExist:
                     pass
                 else:
-                    origin = self.engine.make_origin(display_name, loader, name, dirs)
+                    origin = self.engine.make_origin(
+                        display_name, loader, name, dirs)
                     result = template, origin
                     break
         self.find_template_cache[key] = result
@@ -62,7 +62,8 @@ class Loader(BaseLoader):
             template, origin = self.find_template(template_name, template_dirs)
             if not hasattr(template, 'render'):
                 try:
-                    template = Template(template, origin, template_name, self.engine)
+                    template = Template(
+                        template, origin, template_name, self.engine)
                 except TemplateDoesNotExist:
                     # If compiling the template we found raises TemplateDoesNotExist,
                     # back off to returning the source and display name for the template

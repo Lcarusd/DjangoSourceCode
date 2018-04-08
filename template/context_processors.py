@@ -1,10 +1,7 @@
 """
-A set of request processors that return dictionaries to be merged into a
-template context. Each function takes the request object as its only parameter
-and returns a dictionary to add to the context.
+一组请求处理器，返回要合并到模板上下文中的字典。 每个函数都将请求对象作为其唯一参数，并返回一个字典以添加到上下文中。
 
-These are referenced from the 'context_processors' option of the configuration
-of a DjangoTemplates backend and used by RequestContext.
+这些参数来自DjangoTemplates后端配置的'context_processors'选项，并由RequestContext使用。
 """
 
 from __future__ import unicode_literals
@@ -18,15 +15,12 @@ from django.utils.functional import lazy
 
 def csrf(request):
     """
-    Context processor that provides a CSRF token, or the string 'NOTPROVIDED' if
-    it has not been provided by either a view decorator or the middleware
+    提供CSRF标记的上下文处理器，或者视图装饰器或中间件未提供的字符串“NOTPROVIDED”
     """
     def _get_val():
         token = get_token(request)
         if token is None:
-            # In order to be able to provide debugging info in the
-            # case of misconfiguration, we use a sentinel value
-            # instead of returning an empty dict.
+            # 为了能够在错误配置的情况下提供调试信息，我们使用一个sentinel值而不是返回一个空的字典。
             return 'NOTPROVIDED'
         else:
             return smart_text(token)
