@@ -505,11 +505,9 @@ def build_request_repr(request, path_override=None, GET_override=None,
 # this slightly more restricted function, used by QueryDict.
 def bytes_to_text(s, encoding):
     """
-    Converts basestring objects to unicode, using the given encoding. Illegally
-    encoded input characters are replaced with Unicode "unknown" codepoint
-    (\ufffd).
+   使用给定的编码将basestring对象转换为unicode。 非法编码的输入字符被Unicode“未知”码点（\ ufffd）替换。
 
-    Returns any non-basestring objects without change.
+    无变化地返回任何非basetring对象。
     """
     if isinstance(s, bytes):
         return six.text_type(s, encoding, 'replace')
@@ -519,10 +517,9 @@ def bytes_to_text(s, encoding):
 
 def split_domain_port(host):
     """
-    Return a (domain, port) tuple from a given host.
+    从给定主机返回一个（域，端口）元组。
 
-    Returned domain is lower-cased. If the host is invalid, the domain will be
-    empty.
+    返回的域名较低。 如果主机无效，则域将为空。
     """
     host = host.lower()
 
@@ -530,7 +527,7 @@ def split_domain_port(host):
         return '', ''
 
     if host[-1] == ']':
-        # It's an IPv6 address without a port.
+        # 这是一个没有端口的IPv6地址。
         return host, ''
     bits = host.rsplit(':', 1)
     if len(bits) == 2:
@@ -540,19 +537,12 @@ def split_domain_port(host):
 
 def validate_host(host, allowed_hosts):
     """
-    Validate the given host for this site.
+    验证此站点的给定主机。
 
-    Check that the host looks valid and matches a host or host pattern in the
-    given list of ``allowed_hosts``. Any pattern beginning with a period
-    matches a domain and all its subdomains (e.g. ``.example.com`` matches
-    ``example.com`` and any subdomain), ``*`` matches anything, and anything
-    else must match exactly.
+    检查主机看起来是否有效，并在给定的allowed_hosts列表中匹配主机或主机模式。 以句号开头的任何模式都与一个域及其所有子域相匹配（例如``.example.com``匹配``example.com``和任何子域），``*`匹配任何内容，其他任何内容都必须完全匹配。
+    注意：此函数假定给定的主机是较小的，并且已经有端口（如果有的话）被剥离。
 
-    Note: This function assumes that the given host is lower-cased and has
-    already had the port, if any, stripped off.
-
-    Return ``True`` for a valid host, ``False`` otherwise.
-
+    返回``True``为有效主机，否则返回`False`。
     """
     host = host[:-1] if host.endswith('.') else host
 

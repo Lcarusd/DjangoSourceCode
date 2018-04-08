@@ -6,8 +6,9 @@ from django.utils import six
 from django.utils.encoding import force_str
 from django.utils.six.moves import http_cookies
 
-# Some versions of Python 2.7 and later won't need this encoding bug fix:
-_cookie_encodes_correctly = http_cookies.SimpleCookie().value_encode(';') == (';', '"\\073"')
+# Python 2.7及更高版本的某些版本不需要此编码错误修正：
+_cookie_encodes_correctly = http_cookies.SimpleCookie(
+).value_encode(';') == (';', '"\\073"')
 # See ticket #13007, http://bugs.python.org/issue2193 and http://trac.edgewall.org/ticket/2256
 _tc = http_cookies.SimpleCookie()
 try:
@@ -16,7 +17,7 @@ try:
 except http_cookies.CookieError:
     _cookie_allows_colon_in_names = False
 
-# Cookie pickling bug is fixed in Python 2.7.9 and Python 3.4.3+
+# Cookie pickling bug在Python 2.7.9和Python 3.4.3+中得到修复
 # http://bugs.python.org/issue22775
 cookie_pickles_properly = (
     (sys.version_info[:2] == (2, 7) and sys.version_info >= (2, 7, 9)) or
@@ -31,10 +32,9 @@ else:
     class SimpleCookie(http_cookies.SimpleCookie):
         if not cookie_pickles_properly:
             def __setitem__(self, key, value):
-                # Apply the fix from http://bugs.python.org/issue22775 where
-                # it's not fixed in Python itself
+                # 从http://bugs.python.org/issue22775申请修复，在Python本身并不固定
                 if isinstance(value, Morsel):
-                    # allow assignment of constructed Morsels (e.g. for pickling)
+                    # 允许分配构建的Morsel（例如用于pickling）
                     dict.__setitem__(self, key, value)
                 else:
                     super(SimpleCookie, self).__setitem__(key, value)
@@ -90,7 +90,7 @@ else:
 
 def parse_cookie(cookie):
     """
-    Return a dictionary parsed from a `Cookie:` header string.
+    返回从“Cookie：”头字符串解析的字典。
     """
     cookiedict = {}
     if six.PY2:
@@ -99,11 +99,11 @@ def parse_cookie(cookie):
         if str('=') in chunk:
             key, val = chunk.split(str('='), 1)
         else:
-            # Assume an empty name per
+            # 假设每个空名称
             # https://bugzilla.mozilla.org/show_bug.cgi?id=169091
             key, val = str(''), chunk
         key, val = key.strip(), val.strip()
         if key or val:
-            # unquote using Python's algorithm.
+            # 使用Python的算法取消引用。
             cookiedict[key] = http_cookies._unquote(val)
     return cookiedict
