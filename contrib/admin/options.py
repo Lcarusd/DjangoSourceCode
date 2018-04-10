@@ -645,9 +645,8 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_model_perms(self, request):
         """
-        Returns a dict of all perms for this model. This dict has the keys
-        ``add``, ``change``, and ``delete`` mapping to the True/False for each
-        of those actions.
+        返回此模型的所有perms字典。 
+        这个字典中的每一个操作都有键“add”，“change”和“delete”映射到True/False。
         """
         return {
             'add': self.has_add_permission(request),
@@ -663,8 +662,8 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         """
-        Returns a Form class for use in the admin add view. This is used by
-        add_view and change_view.
+        返回一个Form类用于管理员添加视图。 
+        这由add_view和change_view使用。
         """
         if 'fields' in kwargs:
             fields = kwargs.pop('fields')
