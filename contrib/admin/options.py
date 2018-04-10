@@ -675,11 +675,9 @@ class ModelAdmin(BaseModelAdmin):
             exclude = list(self.exclude)
         exclude.extend(self.get_readonly_fields(request, obj))
         if self.exclude is None and hasattr(self.form, '_meta') and self.form._meta.exclude:
-            # Take the custom ModelForm's Meta.exclude into account only if the
-            # ModelAdmin doesn't define its own.
+            # 只有在ModelAdmin没有定义它自己的情况下，才能将自定义的ModelForm的Meta.exclude考虑在内。
             exclude.extend(self.form._meta.exclude)
-        # if exclude is an empty list we pass None to be consistent with the
-        # default on modelform_factory
+        # 如果exclude是一个空列表，我们将None传递为与modelform_factory上的默认值一致
         exclude = exclude or None
         defaults = {
             "form": self.form,
@@ -700,16 +698,15 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_changelist(self, request, **kwargs):
         """
-        Returns the ChangeList class for use on the changelist page.
+        返回更改列表页面上使用的ChangeList类。
         """
         from django.contrib.admin.views.main import ChangeList
         return ChangeList
 
     def get_object(self, request, object_id, from_field=None):
         """
-        Returns an instance matching the field and value provided, the primary
-        key is used if no field is provided. Returns ``None`` if no match is
-        found or the object_id fails validation.
+        返回与提供的字段和值匹配的实例，如果未提供字段，则使用主键。 
+        如果找不到匹配或者object_id验证失败，则返回``None``。
         """
         queryset = self.get_queryset(request)
         model = queryset.model
@@ -722,7 +719,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_changelist_form(self, request, **kwargs):
         """
-        Returns a Form class for use in the Formset on the changelist page.
+        返回一个Form类，用于更改列表页面上的Formset。
         """
         defaults = {
             "formfield_callback": partial(self.formfield_for_dbfield, request=request),
@@ -736,8 +733,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_changelist_formset(self, request, **kwargs):
         """
-        Returns a FormSet class for use on the changelist page if list_editable
-        is used.
+        如果使用list_editable，则返回FormSet类用于更改列表页面。
         """
         defaults = {
             "formfield_callback": partial(self.formfield_for_dbfield, request=request),
@@ -749,8 +745,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def _get_formsets(self, request, obj):
         """
-        Helper function that exists to allow the deprecation warning to be
-        executed while this function continues to return a generator.
+        存在的辅助函数允许在该函数继续返回生成器时执行弃用警告。
         """
         for inline in self.get_inline_instances(request, obj):
             yield inline.get_formset(request, obj)
@@ -765,7 +760,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_formsets_with_inlines(self, request, obj=None):
         """
-        Yields formsets and the corresponding inlines.
+        迭代formset和相应的内联。
         """
         # We call get_formsets() [deprecated] and check if it triggers a
         # warning. If it does, then it's ours and we can safely ignore it, but
@@ -794,9 +789,9 @@ class ModelAdmin(BaseModelAdmin):
 
     def log_addition(self, request, object):
         """
-        Log that an object has been successfully added.
+        记录一个对象已被成功添加。
 
-        The default implementation creates an admin LogEntry object.
+        默认实现创建一个管理LogEntry对象。
         """
         from django.contrib.admin.models import LogEntry, ADDITION
         LogEntry.objects.log_action(
@@ -809,9 +804,9 @@ class ModelAdmin(BaseModelAdmin):
 
     def log_change(self, request, object, message):
         """
-        Log that an object has been successfully changed.
+        记录一个对象已成功更改。
 
-        The default implementation creates an admin LogEntry object.
+        默认实现创建一个管理LogEntry对象。
         """
         from django.contrib.admin.models import LogEntry, CHANGE
         LogEntry.objects.log_action(
@@ -825,10 +820,8 @@ class ModelAdmin(BaseModelAdmin):
 
     def log_deletion(self, request, object, object_repr):
         """
-        Log that an object will be deleted. Note that this method must be
-        called before the deletion.
-
-        The default implementation creates an admin LogEntry object.
+        记录一个对象将被删除。 请注意，必须在删除之前调用此方法。
+        默认实现创建一个管理LogEntry对象。
         """
         from django.contrib.admin.models import LogEntry, DELETION
         LogEntry.objects.log_action(
@@ -841,7 +834,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def action_checkbox(self, obj):
         """
-        A list_display column containing a checkbox widget.
+        包含复选框小部件的list_display列。
         """
         return helpers.checkbox.render(helpers.ACTION_CHECKBOX_NAME, force_text(obj.pk))
     action_checkbox.short_description = mark_safe('<input type="checkbox" id="action-toggle" />')
@@ -849,34 +842,31 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_actions(self, request):
         """
-        Return a dictionary mapping the names of all actions for this
-        ModelAdmin to a tuple of (callable, name, description) for each action.
+        返回一个字典，将此ModelAdmin的所有操作的名称映射到每个操作的（callable，name，description）元组。
         """
-        # If self.actions is explicitly set to None that means that we don't
-        # want *any* actions enabled on this page.
+        # 如果self.actions显式设置为None，那意味着我们不希望在此页面上启用任何操作。
         if self.actions is None or IS_POPUP_VAR in request.GET:
             return OrderedDict()
 
         actions = []
 
-        # Gather actions from the admin site first
+        # 首先从管理网站集中操作
         for (name, func) in self.admin_site.actions:
             description = getattr(func, 'short_description', name.replace('_', ' '))
             actions.append((func, name, description))
 
-        # Then gather them from the model admin and all parent classes,
-        # starting with self and working back up.
+        # 然后从模型管理员和所有父类中收集它们，从自我开始并重新开始工作。
         for klass in self.__class__.mro()[::-1]:
             class_actions = getattr(klass, 'actions', [])
-            # Avoid trying to iterate over None
+            # 避免遍历None
             if not class_actions:
                 continue
             actions.extend(self.get_action(action) for action in class_actions)
 
-        # get_action might have returned None, so filter any of those out.
+        # get_action可能已经返回None，因此请将其过滤掉。
         actions = filter(None, actions)
 
-        # Convert the actions into an OrderedDict keyed by name.
+        # 将操作转换为按名称键入的OrderedDict。
         actions = OrderedDict(
             (name, (func, name, desc))
             for func, name, desc in actions
@@ -886,8 +876,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_action_choices(self, request, default_choices=BLANK_CHOICE_DASH):
         """
-        Return a list of choices for use in a form object.  Each choice is a
-        tuple (name, description).
+        返回在表单对象中使用的选项列表。 每个选项都是一个元组（名称，描述）。
         """
         choices = [] + default_choices
         for func, name, description in six.itervalues(self.get_actions(request)):
@@ -897,22 +886,21 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_action(self, action):
         """
-        Return a given action from a parameter, which can either be a callable,
-        or the name of a method on the ModelAdmin.  Return is a tuple of
-        (callable, name, description).
+        从参数中返回给定的动作，该参数可以是可调用的，
+        也可以是ModelAdmin中方法的名称。 返回是一个tuple(callable, name, description).
         """
-        # If the action is a callable, just use it.
+        # 如果动作是可调用的，就使用它
         if callable(action):
             func = action
             action = action.__name__
 
-        # Next, look for a method. Grab it off self.__class__ to get an unbound
-        # method instead of a bound one; this ensures that the calling
-        # conventions are the same for functions and methods.
+        # 接下来，寻找一种方法。 
+        # 将它从自己的.__ class__中取出，以获得未绑定的方法而不是绑定的方法; 
+        # 这确保了调用约定对于函数和方法是相同的。
         elif hasattr(self.__class__, action):
             func = getattr(self.__class__, action)
 
-        # Finally, look for a named method on the admin site
+        # 最后，在管理网站上寻找一个命名方法
         else:
             try:
                 func = self.admin_site.get_action(action)
@@ -927,43 +915,38 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_list_display(self, request):
         """
-        Return a sequence containing the fields to be displayed on the
-        changelist.
+        返回包含要在更改列表中显示的字段的序列。
         """
         return self.list_display
 
     def get_list_display_links(self, request, list_display):
         """
-        Return a sequence containing the fields to be displayed as links
-        on the changelist. The list_display parameter is the list of fields
-        returned by get_list_display().
+        返回包含字段的序列，作为更改列表上的链接显示。 
+        list_display参数是get_list_display（）返回的字段列表。
         """
         if self.list_display_links or self.list_display_links is None or not list_display:
             return self.list_display_links
         else:
-            # Use only the first item in list_display as link
+            # 只使用list_display中的第一项作为链接
             return list(list_display)[:1]
 
     def get_list_filter(self, request):
         """
-        Returns a sequence containing the fields to be displayed as filters in
-        the right sidebar of the changelist page.
+        返回包含要在更改列表页面的右侧边栏中显示为过滤器的字段的序列。
         """
         return self.list_filter
 
     def get_search_fields(self, request):
         """
-        Returns a sequence containing the fields to be searched whenever
-        somebody submits a search query.
+        每当有人提交搜索查询时，都会返回包含要搜索的字段的序列。
         """
         return self.search_fields
 
     def get_search_results(self, request, queryset, search_term):
         """
-        Returns a tuple containing a queryset to implement the search,
-        and a boolean indicating if the results may contain duplicates.
+        返回包含实现搜索的查询集的元组，以及指示结果是否包含重复项的布尔值。
         """
-        # Apply keyword searches.
+        # 应用关键字搜索。
         def construct_search(field_name):
             if field_name.startswith('^'):
                 return "%s__istartswith" % field_name[1:]
@@ -993,7 +976,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def get_preserved_filters(self, request):
         """
-        Returns the preserved filters querystring.
+        返回保存的过滤器查询字符串。
         """
         match = request.resolver_match
         if self.preserve_filters and match:
@@ -1011,7 +994,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def construct_change_message(self, request, form, formsets):
         """
-        Construct a change message from a changed object.
+        从更改的对象构建更改消息。
         """
         change_message = []
         if form.changed_data:
@@ -1038,13 +1021,10 @@ class ModelAdmin(BaseModelAdmin):
     def message_user(self, request, message, level=messages.INFO, extra_tags='',
                      fail_silently=False):
         """
-        Send a message to the user. The default implementation
-        posts a message using the django.contrib.messages backend.
+        发送消息给用户。 默认实现使用django.contrib.messages后端发布消息。
 
-        Exposes almost the same API as messages.add_message(), but accepts the
-        positional arguments in a different order to maintain backwards
-        compatibility. For convenience, it accepts the `level` argument as
-        a string rather than the usual level number.
+        公开与messages.add_message()几乎相同的API，但接受不同顺序的位置参数以维持向后兼容性。 
+        为了方便起见，它接受`level`参数作为字符串而不是通常的级别号码。
         """
 
         if not isinstance(level, int):
@@ -1062,36 +1042,34 @@ class ModelAdmin(BaseModelAdmin):
 
     def save_form(self, request, form, change):
         """
-        Given a ModelForm return an unsaved instance. ``change`` is True if
-        the object is being changed, and False if it's being added.
+        给定一个ModelForm返回一个未保存的实例。 
+        如果对象正在更改，则“更改”为True，如果正在添加，则为“False”。
         """
         return form.save(commit=False)
 
     def save_model(self, request, obj, form, change):
         """
-        Given a model instance save it to the database.
+        给定一个模型实例将其保存到数据库。
         """
         obj.save()
 
     def delete_model(self, request, obj):
         """
-        Given a model instance delete it from the database.
+        给定一个模型实例从数据库中删除它。
         """
         obj.delete()
 
     def save_formset(self, request, form, formset, change):
         """
-        Given an inline formset save it to the database.
+        给定一个内联formset将其保存到数据库。
         """
         formset.save()
 
     def save_related(self, request, form, formsets, change):
         """
-        Given the ``HttpRequest``, the parent ``ModelForm`` instance, the
-        list of inline formsets and a boolean value based on whether the
-        parent is being added or changed, save the related objects to the
-        database. Note that at this point save_form() and save_model() have
-        already been called.
+        根据父节点是否被添加或更改，给定HttpRequest，父节点ModelForm实例，内联窗体集列表和布尔值，
+        将相关对象保存到数据库中。 
+        请注意，此时save_form（）和save_model（）已被调用。
         """
         form.save_m2m()
         for formset in formsets:
@@ -1136,14 +1114,13 @@ class ModelAdmin(BaseModelAdmin):
 
     def response_add(self, request, obj, post_url_continue=None):
         """
-        Determines the HttpResponse for the add_view stage.
+        确定add_view阶段的HttpResponse。
         """
         opts = obj._meta
         pk_value = obj._get_pk_val()
         preserved_filters = self.get_preserved_filters(request)
         msg_dict = {'name': force_text(opts.verbose_name), 'obj': force_text(obj)}
-        # Here, we distinguish between different save types by checking for
-        # the presence of keys in request.POST.
+        # 在这里，我们通过检查request.POST中是否存在密钥来区分不同的保存类型。
 
         if IS_POPUP_VAR in request.POST:
             to_field = request.POST.get(TO_FIELD_VAR)
@@ -1153,7 +1130,7 @@ class ModelAdmin(BaseModelAdmin):
                 attr = obj._meta.pk.attname
             value = obj.serializable_value(attr)
             return SimpleTemplateResponse('admin/popup_response.html', {
-                'pk_value': escape(pk_value),  # for possible backwards-compatibility
+                'pk_value': escape(pk_value),  # 为了可能的向后兼容性
                 'value': escape(value),
                 'obj': escapejs(obj)
             })
@@ -1186,7 +1163,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def response_change(self, request, obj):
         """
-        Determines the HttpResponse for the change_view stage.
+        确定change_view阶段的HttpResponse。
         """
 
         if IS_POPUP_VAR in request.POST:
@@ -1240,8 +1217,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def response_post_save_add(self, request, obj):
         """
-        Figure out where to redirect after the 'Save' button has been pressed
-        when adding a new object.
+        找出在添加新对象时按下“保存”按钮后重定向的位置。
         """
         opts = self.model._meta
         if self.has_change_permission(request, None):
@@ -1257,8 +1233,7 @@ class ModelAdmin(BaseModelAdmin):
 
     def response_post_save_change(self, request, obj):
         """
-        Figure out where to redirect after the 'Save' button has been pressed
-        when editing an existing object.
+        在编辑现有对象时按下“保存”按钮后，找出重定向的位置。
         """
         opts = self.model._meta
 
@@ -1275,9 +1250,9 @@ class ModelAdmin(BaseModelAdmin):
 
     def response_action(self, request, queryset):
         """
-        Handle an admin action. This is called if a request is POSTed to the
-        changelist; it returns an HttpResponse if the action was handled, and
-        None otherwise.
+        处理管理操作。 
+        如果请求被张贴到更改列表中，这将被调用; 
+        如果处理操作，它将返回一个HttpResponse，否则返回None。
         """
 
         # There can be multiple action forms on the page (at the top
