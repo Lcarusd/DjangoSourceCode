@@ -1787,11 +1787,11 @@ class ModelAdmin(BaseModelAdmin):
 
 class InlineModelAdmin(BaseModelAdmin):
     """
-    Options for inline editing of ``model`` instances.
+    内置编辑“模型”实例的选项。
 
-    Provide ``fk_name`` to specify the attribute name of the ``ForeignKey``
-    from ``model`` to its parent. This is required if ``model`` has more than
-    one ``ForeignKey`` to its parent.
+    提供``fk_name``来指定``ForeignKey``的属性名称
+    从``model``到它的父代。 如果“模型”有多个，这是必需的
+    一个``ForeignKey`给它的父亲。
     """
     model = None
     fk_name = None
