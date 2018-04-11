@@ -236,7 +236,7 @@ class BaseModelAdminChecks(object):
             ]))
 
     def _check_filter_horizontal(self, cls, model):
-        """ Check that filter_horizontal is a sequence of field names. """
+        """ 检查filter_horizontal是一系列字段名称。"""
 
         if not hasattr(cls, 'filter_horizontal'):
             return []
