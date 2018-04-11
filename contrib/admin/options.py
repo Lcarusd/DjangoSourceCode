@@ -71,7 +71,8 @@ def get_ul_class(radio_style):
 class IncorrectLookupParameters(Exception):
     pass
 
-# formfield_overrides的默认值。 
+
+# formfield_overrides的默认值。
 # ModelAdmin子类可以通过添加到ModelAdmin.formfield_overrides来更改此类。
 FORMFIELD_FOR_DBFIELD_DEFAULTS = {
     models.DateTimeField: {
@@ -111,11 +112,11 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
     view_on_site = True
     show_full_result_count = True
 
-    # Validation of ModelAdmin definitions
-    # Old, deprecated style:
+    # ModelAdmin定义的验证
+    # 旧的，不赞成使用的风格
     validator_class = None
     default_validator_class = validation.BaseValidator
-    # New style:
+    # 新风格
     checks_class = BaseModelAdminChecks
 
     @classmethod
@@ -160,38 +161,44 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
         """
         request = kwargs.pop("request", None)
 
-        # 如果该字段指定了选择，我们不需要寻找特殊的管理小部件 
+        # 如果该字段指定了选择，我们不需要寻找特殊的管理小部件
         # -- 我们只需要使用某种选择的小部件。
         if db_field.choices:
             return self.formfield_for_choice_field(db_field, request, **kwargs)
 
-        # ForeignKey or ManyToManyFields
+        # ForeignKey 或 ManyToManyFields
         if isinstance(db_field, (models.ForeignKey, models.ManyToManyField)):
-            # Combine the field kwargs with any options for formfield_overrides.
-            # Make sure the passed in **kwargs override anything in
-            # formfield_overrides because **kwargs is more specific, and should
-            # always win.
-            if db_field.__class__ in self.formfield_overrides:
-                kwargs = dict(self.formfield_overrides[db_field.__class__], **kwargs)
 
-            # Get the correct formfield.
+            # 结合字段kwargs和formfield_overrides的任何选项。
+            # 确保传入的**kwargs覆盖formfield_overrides中的任何内容，因为**kwargs更具体，并应始终获胜。
+            if db_field.__class__ in self.formfield_overrides:
+                kwargs = dict(
+                    self.formfield_overrides[db_field.__class__], **kwargs)
+
+            # 获取正确的表单。
             if isinstance(db_field, models.ForeignKey):
-                formfield = self.formfield_for_foreignkey(db_field, request, **kwargs)
+                formfield = self.formfield_for_foreignkey(
+                    db_field, request, **kwargs)
             elif isinstance(db_field, models.ManyToManyField):
-                formfield = self.formfield_for_manytomany(db_field, request, **kwargs)
+                formfield = self.formfield_for_manytomany(
+                    db_field, request, **kwargs)
 
             # For non-raw_id fields, wrap the widget with a wrapper that adds
             # extra HTML -- the "add other" interface -- to the end of the
             # rendered output. formfield can be None if it came from a
             # OneToOneField with parent_link=True or a M2M intermediary.
             if formfield and db_field.name not in self.raw_id_fields:
-                related_modeladmin = self.admin_site._registry.get(db_field.rel.to)
+                related_modeladmin = self.admin_site._registry.get(
+                    db_field.rel.to)
                 wrapper_kwargs = {}
                 if related_modeladmin:
                     wrapper_kwargs.update(
-                        can_add_related=related_modeladmin.has_add_permission(request),
-                        can_change_related=related_modeladmin.has_change_permission(request),
-                        can_delete_related=related_modeladmin.has_delete_permission(request),
+                        can_add_related=related_modeladmin.has_add_permission(
+                            request),
+                        can_change_related=related_modeladmin.has_change_permission(
+                            request),
+                        can_delete_related=related_modeladmin.has_delete_permission(
+                            request),
                     )
                 formfield.widget = widgets.RelatedFieldWidgetWrapper(
                     formfield.widget, db_field.rel, self.admin_site, **wrapper_kwargs
