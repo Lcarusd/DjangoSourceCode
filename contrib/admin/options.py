@@ -220,9 +220,9 @@ class BaseModelAdmin(six.with_metaclass(forms.MediaDefiningClass)):
         """
         Get a form Field for a database Field that has declared choices.
         """
-        # If the field is named as a radio_field, use a RadioSelect
+        # 如果该字段被命名为radio_field，请使用RadioSelect
         if db_field.name in self.radio_fields:
-            # Avoid stomping on custom widget/choices arguments.
+            # 避免重复自定义小部件/选择参数。
             if 'widget' not in kwargs:
                 kwargs['widget'] = widgets.AdminRadioSelect(attrs={
                     'class': get_ul_class(self.radio_fields[db_field.name]),
