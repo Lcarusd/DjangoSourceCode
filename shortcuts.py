@@ -149,7 +149,8 @@ def get_object_or_404(klass, *args, **kwargs):
     try:
         return queryset.get(*args, **kwargs)
     except queryset.model.DoesNotExist:
-        raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+        raise Http404('No %s matches the given query.' %
+                      queryset.model._meta.object_name)
 
 
 def get_list_or_404(klass, *args, **kwargs):
@@ -163,48 +164,43 @@ def get_list_or_404(klass, *args, **kwargs):
     queryset = _get_queryset(klass)
     obj_list = list(queryset.filter(*args, **kwargs))
     if not obj_list:
-        raise Http404('No %s matches the given query.' % queryset.model._meta.object_name)
+        raise Http404('No %s matches the given query.' %
+                      queryset.model._meta.object_name)
     return obj_list
 
 
 def resolve_url(to, *args, **kwargs):
     """
-    Return a URL appropriate for the arguments passed.
+    返回适合传递参数的URL。
 
-    The arguments could be:
-
-        * A model: the model's `get_absolute_url()` function will be called.
-
-        * A view name, possibly with arguments: `urlresolvers.reverse()` will
-          be used to reverse-resolve the name.
-
-        * A URL, which will be returned as-is.
-
+    参数可以是：
+    *模型：模型的`get_absolute_url（）`函数将被调用。
+    *视图名称，可能带有参数：`urlresolvers.reverse（）`将用于反向解析名称。
+    *一个URL，它将按原样返回。
     """
-    # If it's a model, use get_absolute_url()
+    # 如果它是一个模型，使用get_absolute_url（）
     if hasattr(to, 'get_absolute_url'):
         return to.get_absolute_url()
 
     if isinstance(to, Promise):
-        # Expand the lazy instance, as it can cause issues when it is passed
-        # further to some Python functions like urlparse.
+        # 展开惰性实例，因为它会在进一步传递给一些Python函数（如urlparse）时导致问题。
         to = force_text(to)
 
     if isinstance(to, six.string_types):
-        # Handle relative URLs
+        # 处理相对URL
         if any(to.startswith(path) for path in ('./', '../')):
             return to
 
-    # Next try a reverse URL resolution.
+    # 接下来尝试反向网址解析。
     try:
         return urlresolvers.reverse(to, args=args, kwargs=kwargs)
     except urlresolvers.NoReverseMatch:
-        # If this is a callable, re-raise.
+        # 如果这是可调用的，请重新加注。
         if callable(to):
             raise
-        # If this doesn't "feel" like a URL, re-raise.
+        # 如果这感觉不像像一个URL，重新提高。
         if '/' not in to and '.' not in to:
             raise
 
-    # Finally, fall back and assume it's a URL
+    # 最后，回退并假定它是一个URL
     return to

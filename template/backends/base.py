@@ -1,4 +1,4 @@
-# Since this package contains a "django" module, this is required on Python 2.
+# 由于该软件包包含一个“django”模块，因此在Python 2中是必需的。
 from __future__ import absolute_import
 
 from django.core.exceptions import (
@@ -11,14 +11,13 @@ from django.utils.functional import cached_property
 
 class BaseEngine(object):
 
-    # Core methods: engines have to provide their own implementation
-    #               (except for from_string which is optional).
+    # 核心方法：引擎必须提供自己的实现（除了可选的from_string外）。
 
     def __init__(self, params):
         """
-        Initializes the template engine.
+        初始化模板引擎。
 
-        Receives the configuration settings as a dict.
+        以字典形式接收配置设置。
         """
         params = params.copy()
         self.name = params.pop('NAME')
