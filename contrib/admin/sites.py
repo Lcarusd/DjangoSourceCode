@@ -29,23 +29,23 @@ class NotRegistered(Exception):
 
 class AdminSite(object):
     """
-    An AdminSite object encapsulates an instance of the Django admin application, ready
-    to be hooked in to your URLconf. Models are registered with the AdminSite using the
-    register() method, and the get_urls() method can then be used to access Django view
-    functions that present a full admin interface for the collection of registered
-    models.
+    一个AdminSite对象封装了Django管理应用程序的一个实例，
+    准备连接到您的URLconf。
+    使用register()方法在AdminSite注册模型，
+    然后使用get_url()方法来访问Django视图函数，
+    该函数为注册模型的集合提供完整的管理界面。
     """
 
-    # Text to put at the end of each page's <title>.
+    # 在每一页的末尾加上文本<title>。
     site_title = ugettext_lazy('Django site admin')
 
-    # Text to put in each page's <h1>.
+    # 文本输入到每个页面的<h1>。
     site_header = ugettext_lazy('Django administration')
 
-    # Text to put at the top of the admin index page.
+    # 在管理索引页的顶部放置文本。
     index_title = ugettext_lazy('Site administration')
 
-    # URL for the "View site" link at the top of each admin page.
+    # 在每个管理页面顶部的“查看站点”链接的URL。
     site_url = '/'
 
     login_form = None
@@ -64,17 +64,13 @@ class AdminSite(object):
 
     def register(self, model_or_iterable, admin_class=None, **options):
         """
-        Registers the given model(s) with the given admin class.
-
-        The model(s) should be Model classes, not instances.
-
-        If an admin class isn't given, it will use ModelAdmin (the default
-        admin options). If keyword arguments are given -- e.g., list_display --
-        they'll be applied as options to the admin class.
-
-        If a model is already registered, this will raise AlreadyRegistered.
-
-        If a model is abstract, this will raise ImproperlyConfigured.
+        向给定的管理类注册给定的模型。
+        模型应该是模型类，而不是实例。
+        如果没有提供管理类，它将使用ModelAdmin(默认值)。
+        管理选项)。如果给出了关键字参数——例如list_display——。
+        它们将用作管理类的选项。
+        如果已经注册了一个模型，那么这个模型将被注册。
+        如果模型是抽象的，这将提高配置的改进。
         """
         if not admin_class:
             admin_class = ModelAdmin
