@@ -388,13 +388,13 @@ class Model(six.with_metaclass(ModelBase)):
     def __init__(self, *args, **kwargs):
         signals.pre_init.send(sender=self.__class__, args=args, kwargs=kwargs)
 
-        # Set up the storage for instance state
+        # 设置实例状态的存储。
         self._state = ModelState()
 
-        # There is a rather weird disparity here; if kwargs, it's set, then args
-        # overrides it. It should be one or the other; don't duplicate the work
-        # The reason for the kwargs check is that standard iterator passes in by
-        # args, and instantiation for iteration is 33% faster.
+        # 这里有一个相当奇怪的差异;
+        # 如果是kwargs，它是set，然后args覆盖它。
+        # 它应该是一个或另一个;
+        # 不要重复这个工作，kwargs检查的原因是标准迭代器通过了byargs，而迭代的实例化速度要快33%。
         args_len = len(args)
         if args_len > len(self._meta.concrete_fields):
             # Daft, but matches old exception sans the err msg.
