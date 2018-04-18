@@ -17,7 +17,7 @@ NO_DB_ALIAS = '__no_db__'
 
 class BaseDatabaseWrapper(object):
     """
-    Represents a database connection.
+    代表数据库连接。
     """
     # Mapping of Field objects to their column types.
     data_types = {}
@@ -86,20 +86,24 @@ class BaseDatabaseWrapper(object):
     # ##### Backend-specific methods for creating connections and cursors #####
 
     def get_connection_params(self):
-        """Returns a dict of parameters suitable for get_new_connection."""
-        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a get_connection_params() method')
+        """返回适合get_new_connection的参数的字典。"""
+        raise NotImplementedError(
+            'subclasses of BaseDatabaseWrapper may require a get_connection_params() method')
 
     def get_new_connection(self, conn_params):
         """Opens a connection to the database."""
-        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a get_new_connection() method')
+        raise NotImplementedError(
+            'subclasses of BaseDatabaseWrapper may require a get_new_connection() method')
 
     def init_connection_state(self):
         """Initializes the database connection settings."""
-        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require an init_connection_state() method')
+        raise NotImplementedError(
+            'subclasses of BaseDatabaseWrapper may require an init_connection_state() method')
 
     def create_cursor(self):
         """Creates a cursor. Assumes that a connection is established."""
-        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a create_cursor() method')
+        raise NotImplementedError(
+            'subclasses of BaseDatabaseWrapper may require a create_cursor() method')
 
     # ##### Backend-specific methods for creating connections #####
 
@@ -275,7 +279,8 @@ class BaseDatabaseWrapper(object):
         """
         Backend-specific implementation to enable or disable autocommit.
         """
-        raise NotImplementedError('subclasses of BaseDatabaseWrapper may require a _set_autocommit() method')
+        raise NotImplementedError(
+            'subclasses of BaseDatabaseWrapper may require a _set_autocommit() method')
 
     # ##### Generic transaction management methods #####
 
@@ -415,10 +420,10 @@ class BaseDatabaseWrapper(object):
         if not (self.allow_thread_sharing
                 or self._thread_ident == thread.get_ident()):
             raise DatabaseError("DatabaseWrapper objects created in a "
-                "thread can only be used in that same thread. The object "
-                "with alias '%s' was created in thread id %s and this is "
-                "thread id %s."
-                % (self.alias, self._thread_ident, thread.get_ident()))
+                                "thread can only be used in that same thread. The object "
+                                "with alias '%s' was created in thread id %s and this is "
+                                "thread id %s."
+                                % (self.alias, self._thread_ident, thread.get_ident()))
 
     # ##### Miscellaneous #####
 
