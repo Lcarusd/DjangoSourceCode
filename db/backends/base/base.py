@@ -91,7 +91,7 @@ class BaseDatabaseWrapper(object):
             'subclasses of BaseDatabaseWrapper may require a get_connection_params() method')
 
     def get_new_connection(self, conn_params):
-        """Opens a connection to the database."""
+        """打开到数据库的连接。"""
         raise NotImplementedError(
             'subclasses of BaseDatabaseWrapper may require a get_new_connection() method')
 
