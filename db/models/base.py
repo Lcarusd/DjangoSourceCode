@@ -523,10 +523,9 @@ class Model(six.with_metaclass(ModelBase)):
 
     def __reduce__(self):
         """
-        Provides pickling support. Normally, this just dispatches to Python's
-        standard handling. However, for models with deferred field loading, we
-        need to do things manually, as they're dynamically created classes and
-        only module-level classes can be pickled by the default path.
+        提供序列化支持。 通常，这只是派发给Python的标准处理。 
+        但是，对于具有延迟字段加载的模型，我们需要手动执行，
+        因为它们是动态创建的类，并且只有模块级别的类可以通过缺省路径进行挑选。
         """
         data = self.__dict__
         data[DJANGO_VERSION_PICKLE_KEY] = get_version()
