@@ -579,18 +579,16 @@ class Model(six.with_metaclass(ModelBase)):
 
     def refresh_from_db(self, using=None, fields=None, **kwargs):
         """
-        Reloads field values from the database.
+        重新加载数据库中的字段值。
 
-        By default, the reloading happens from the database this instance was
-        loaded from, or by the read router if this instance wasn't loaded from
-        any database. The using parameter will override the default.
+        默认情况下，重新加载是从数据库加载此实例，或者是由读取路由器（如果未从任何数据库加载此实例）发生。 
+        使用参数将覆盖默认值。
 
-        Fields can be used to specify which fields to reload. The fields
-        should be an iterable of field attnames. If fields is None, then
-        all non-deferred fields are reloaded.
+        字段可用于指定要重新加载哪些字段。 
+        这些字段应该是字段attnames的迭代。 
+        如果字段为无，则所有未延期的字段都会重新加载。
 
-        When accessing deferred fields of an instance, the deferred loading
-        of the field will call this method.
+        当访问实例的延迟字段时，字段的延迟加载将调用此方法。
         """
         if fields is not None:
             if len(fields) == 0:
