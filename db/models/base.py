@@ -605,7 +605,7 @@ class Model(six.with_metaclass(ModelBase)):
             non_deferred_model = self.__class__
         db_instance_qs = non_deferred_model._default_manager.using(db).filter(pk=self.pk)
 
-        # Use provided fields, if not set then reload all non-deferred fields.
+        # 使用提供的字段，如果未设置，则重新加载所有未延期的字段。
         if fields is not None:
             fields = list(fields)
             db_instance_qs = db_instance_qs.only(*fields)
