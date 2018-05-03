@@ -16,7 +16,7 @@ from io import BytesIO
 
 from django.core import validators
 from django.core.exceptions import ValidationError
-# Provide this import for backwards compatibility.
+# 提供此导入以实现向后兼容。
 from django.core.validators import EMPTY_VALUES  # NOQA
 from django.forms.utils import from_current_timezone, to_current_timezone
 from django.forms.widgets import (
