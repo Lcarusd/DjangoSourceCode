@@ -219,7 +219,7 @@ img {
 }
 
 .entry-title {
-    text-align: center;
+    text-align: left;
     font-size: 1.9em;
     margin-bottom: 20px;
     line-height: 1.6;
@@ -228,13 +228,14 @@ img {
 
 .entry-meta {
     text-align: center;
-    color: #DDDDDD;
+    color: #D0D0D0;
     font-size: 13px;
     margin-bottom: 30px;
 }
 
 .entry-content {
-    font-size: 18px;
+    /*font-size: 18px;*/
+    font-size: 10px;
     line-height: 1.9;
     font-weight: 300;
     color: #000;
