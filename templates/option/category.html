@@ -1,12 +1,13 @@
-{#{% extends 'base.html' %}#}
-{#<h1>测试</h1>#}
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <title>Title</title>#}
-{#</head>#}
-{#<body>#}
-{##}
-{#</body>#}
-{#</html>#}
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+        {% block main %}
+            {% for post in category_list %}
+                <div style="color: #000000">
+            {{ post.name }}
+                </div>
+    {% empty %}
+        <div class="no-post">暂时还没有分类！</div>
+    {% endfor %}
+        {% endblock main %}
