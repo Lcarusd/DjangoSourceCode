@@ -1,13 +1,131 @@
-{% extends 'base.html' %}
-
 {% load staticfiles %}
+{% load blog_tags %}
 
-        {% block main %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lcarusd</title>
+
+    <!-- meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <!-- css -->
+    <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/pace.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'blog/css/highlights/github.css' %}">
+
+     <!-- js -->
+    <script src="{% static 'blog/js/jquery-2.1.3.min.js' %}"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'blog/js/pace.min.js' %}"></script>
+    <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
+
+    <!-- srarch css -->
+    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/component.css' %}" />
+
+    <style>
+        body {
+            background-color: #F7F7F7;
+            {#background-color: #000000;#}
+        }
+
+        {#头部#}
+        .container {
+            margin-bottom: 10px;
+        }
+        header {
+            margin: 0 40px 0 40px;
+        }
+        div.header-box {
+            margin-top: 15px;
+        }
+        h2.header-title {
+            padding:0;
+            margin:0;
+            text-align: center;
+        }
+        hr.header-hr {
+            border:0.7px ridge #000000;
+            margin: 1px;
+        }
+
+        {#页脚#}
+        p.copyright {
+            margin-top: 50px;
+        }
+
+        {#category#}
+        div.category-box {
+            float: left;
+            width: 27.3%;
+            height: 70px;
+            line-height: 70px;
+            margin-top: 50px;
+            margin-left: 3%;
+            margin-right: 3%;
+            {#border: 1px solid red;#}
+            color: #000000;
+            text-align: center;
+            background-color: #ffffff;
+            box-shadow: 0 0 20px #ccc;
+        }
+        div.category-box a {
+            text-align: center;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-box">
+                    <h2 class="header-title"><a href="{% url 'blog:index' %}">Lcarusd Graffiti</a></h2>
+                    <hr class="header-hr"/>
+            </div>
+        </header>
+    </div>
+
+
+    {% block main %}
+        <div style="
+            margin-left: 20%;
+            margin-right: 20%;">
+
             {% for post in category_list %}
-                <div style="color: #000000">
-            {{ post.name }}
+            <div class="category-box">
+                <a href="#">{{ post.name }}</a>
+            </div>
+
+            {% empty %}
+                <div class="no-post">暂时还没有分类！</div>
+            {% endfor %}
+
+        </div>
+    {% endblock main %}
+
+
+    <footer id="site-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="copyright">
+                        &copy 2016 <b>Lcarusd</b> Don't resist evil. - I'm driven by stogie
+                    </p>
                 </div>
-    {% empty %}
-        <div class="no-post">暂时还没有分类！</div>
-    {% endfor %}
-        {% endblock main %}
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="{% static 'blog/js/script.js' %}"></script>
+
+</body>
+</html>
+
+
+
+
