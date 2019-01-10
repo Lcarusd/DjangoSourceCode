@@ -2,13 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.six import python_2_unicode_compatible
-from django.utils.html import strip_tags, format_html
+from django.utils.html import format_html
 import django.utils.timezone as timezone
 from markdownx.utils import markdownify
 from markdownx.models import MarkdownxField
 
 def get_foo():
-    return User.objects.get_or_create(id=3)[0].id
+    return User.objects.get_or_create(id=1)[0].id
+
 
 # python_2_unicode_compatible 装饰器用于兼容 Python2
 @python_2_unicode_compatible
