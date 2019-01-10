@@ -3,9 +3,9 @@
 {% block main %}
 
     <ul class="option">
-        <li><a href="category/">分类</a></li>
-        <li><a href="who/">我是谁</a></li>
-        <li><a href="contact/">联络码</a></li>
+        <li><a href="{% url 'blog:category' %}">分类</a></li>
+        <li><a href="{% url 'blog:who' %}">我是谁</a></li>
+        <li><a href="{% url 'blog:contact' %}">联络码</a></li>
     </ul>
 
     {% if error_msg %}
@@ -15,7 +15,7 @@
     {% for post in post_list %}
         <article>
             <a class="article-name" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
-            <span class="post-time">{{ post.created_time }}</span>
+            <span class="post-time">{{ post.show_time }}</span>
         </article>
 
         <hr class="article-hr" />
