@@ -52,12 +52,11 @@ def category_list(request):
 class CategoryView(ListView):
 
     def get(self, request, pk):
-        r = Category.objects.get(pk=int(pk)).category.all()
-        print(r)
+        category_post = Category.objects.get(pk=int(pk)).category.all().filter(state__gt=0)
         return render(
             request,
             'blog/index.html',
-            context={'post_list': r})
+            context={'post_list': category_post})
 
 
 def who_view(request):
