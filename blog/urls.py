@@ -2,6 +2,7 @@ from django.conf.urls import url
 
 from . import views
 
+
 app_name = 'blog'
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index'),
@@ -10,4 +11,5 @@ urlpatterns = [
     url(r'^category/$', views.category_list, name='category'),
     url(r'^who/$', views.who_view, name='who'),
     url(r'^contact/$', views.contact, name='contact'),
+    url(r'^phone/$', views.phone_view, name='phone'),
 ]
