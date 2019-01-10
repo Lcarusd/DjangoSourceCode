@@ -82,7 +82,7 @@ python manage.py collectstatic
 <br>
 python manage.py shell
 <br>
-python manage.py createsupersuser
+python manage.py createsuperuser
 <br>
 <br>
 python manage.py flush # 清空数据库
