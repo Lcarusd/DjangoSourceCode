@@ -1,25 +1,17 @@
-import markdown
-import datetime
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.utils.six import python_2_unicode_compatible
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, format_html
+import django.utils.timezone as timezone
+from markdownx.utils import markdownify
+from markdownx.models import MarkdownxField
 
 
 # python_2_unicode_compatible 装饰器用于兼容 Python2
 @python_2_unicode_compatible
 class Category(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
-
-
-@python_2_unicode_compatible
-class Tag(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -27,60 +19,54 @@ class Tag(models.Model):
 
 @python_2_unicode_compatible
 class Post(models.Model):
+    post_state = (
+        (0, '草稿'),
+        (1, '发布'),
+    )
 
-    # 文章标题
-    title = models.CharField(u'文章标题', max_length=80)
-
-    # 文章正文
-    body = models.TextField(u'文章正文')
-
-    # 文章的创建时间和最后一次修改时间
-    show_time = models.DateTimeField(u'展示时间')
-    created_time = models.DateTimeField(auto_now_add=True)
-    modified_time = models.DateTimeField()
-
-
-    # 文章摘要
-    excerpt = models.CharField(u'文章摘要', max_length=200, blank=True)
-
-    # 阅读量
-    views = models.PositiveIntegerField(default=0)
-
-    # 这是分类与标签，分类与标签的模型我们已经定义在上面。
-    # 规定一篇文章只能对应一个分类，但是一个分类下可以有多篇文章
-    category = models.ForeignKey(Category)
-    tags = models.ManyToManyField(Tag, blank=True)
-
-    # 文章作者
-    author = models.ForeignKey(User)
+    title = models.CharField(verbose_name=u'文章标题', max_length=80, unique=True)
+    body = MarkdownxField(verbose_name=u'文章正文')
+    show_time = models.DateField(verbose_name=u'显示时间', default = timezone.now)
+    created_time = models.DateTimeField(verbose_name='文章创建时间', auto_now_add=True)
+    modified_time = models.DateTimeField(verbose_name='文章修改时间', auto_now=True)
+    views = models.PositiveIntegerField(verbose_name='阅读量', default=0, editable=False)
+    # 一篇文章只能对应一个分类，但是一个分类下可以有多篇文章
+    category = models.ForeignKey(Category, related_name = "category", verbose_name='文章分类')
+    author = models.ForeignKey(User, verbose_name='作者')
+    # 0为草稿，1为发布
+    state = models.IntegerField(
+        choices=post_state,
+        default=1,
+        verbose_name='文章状态',
+    )
 
     def __str__(self):
         return self.title
 
-    # 自定义 get_absolute_url 方法
-    # 记得从 django.urls 中导入 reverse 函数
-    def get_absolute_url(self):
-        return reverse('blog:detail', kwargs={'pk': self.pk})
-
     class Meta:
         ordering = ['-created_time']
 
+    # Create a property that returns the markdown instead
+    @property
+    def formatted_markdown(self):
+        return markdownify(self.body)
+
+    # 自定义 get_absolute_url 方法
+    def get_absolute_url(self):
+        return reverse('blog:detail', kwargs={'pk': self.pk})
+
+    # 设置文章发布状态属性值的颜色
+    def state_color(self):
+        color = None
+        if self.state == 0:
+            color = 'red'
+            self.state = "草稿"
+        elif self.state == 1:
+            color = 'green'
+            self.state = "发布"
+        return format_html('<span style="color: {}">{}</span>', color, self.state, )
+
+    # 文章阅读量+1
     def increase_views(self):
         self.views += 1
         self.save(update_fields=['views'])
-
-    def save(self, *args, **kwargs):
-        # 如果没有填写摘要
-        if not self.excerpt:
-            # 首先实例化一个 Markdown 类，用于渲染 body 的文本
-            md = markdown.Markdown(extensions=[
-                'markdown.extensions.extra',
-                'markdown.extensions.codehilite',
-            ])
-            # 先将 Markdown 文本渲染成 HTML 文本
-            # strip_tags 去掉 HTML 文本的全部 HTML 标签
-            # 从文本摘取前 54 个字符赋给 excerpt
-            self.excerpt = strip_tags(md.convert(self.body))[:54]
-
-        # 调用父类的 save 方法将数据保存到数据库中
-        super(Post, self).save(*args, **kwargs)
