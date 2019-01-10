@@ -7,6 +7,8 @@ import django.utils.timezone as timezone
 from markdownx.utils import markdownify
 from markdownx.models import MarkdownxField
 
+def get_foo():
+    return User.objects.get_or_create(id=3)[0].id
 
 # python_2_unicode_compatible 装饰器用于兼容 Python2
 @python_2_unicode_compatible
@@ -32,7 +34,7 @@ class Post(models.Model):
     views = models.PositiveIntegerField(verbose_name='阅读量', default=0, editable=False)
     # 一篇文章只能对应一个分类，但是一个分类下可以有多篇文章
     category = models.ForeignKey(Category, related_name = "category", verbose_name='文章分类')
-    author = models.ForeignKey(User, verbose_name='作者')
+    author = models.ForeignKey(User, verbose_name='作者', default=get_foo)
     # 0为草稿，1为发布
     state = models.IntegerField(
         choices=post_state,
