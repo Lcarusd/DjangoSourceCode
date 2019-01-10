@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% load blog_tags %}
+{#{% load blog_tags %}#}
 
 <!DOCTYPE html>
 <html>
@@ -8,44 +8,53 @@
 
     <!-- meta -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
     <!-- css -->
     <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/pace.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/custom.css' %}">
     <link rel="stylesheet" href="{% static 'blog/css/highlights/github.css' %}">
-
      <!-- js -->
     <script src="{% static 'blog/js/jquery-2.1.3.min.js' %}"></script>
     <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'blog/js/pace.min.js' %}"></script>
     <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
 
-    <!-- srarch css -->
-    <link rel="stylesheet" type="text/css" href="{% static 'blog/css/component.css' %}" />
-
     <style>
-        body {
-            background-color: #F7F7F7;
+        @font-face {
+	        font-family: 'srss';
+	        src:url('{% static 'blog/fonts/customize/田氏宋体旧字形.ttf' %}');
+	        font-weight: normal;
+	        font-style: normal;
+        }
+        @font-face {
+	        font-family: 'bof';
+	        src:url('{% static 'blog/fonts/customize/Bold-Oldstyle-Figures.ttf' %}');
+	        font-weight: normal;
+	        font-style: normal;
+        }
+        @font-face {
+	        font-family: 'wgn';
+	        src:url('{% static 'blog/fonts/customize/Wyue-GutiFangsong-NC.otf' %}');
+	        font-weight: normal;
+	        font-style: normal;
         }
 
         {#头部#}
         .container {
-            margin-bottom: 10px;
+            margin-bottom: 1%;
         }
         header {
-            margin: 0 40px 0 40px;
-            {#background-color: #0b0080;#}
+            margin: 0 5% 0 5%;
         }
         div.header-box {
-            margin-top: 15px;
+            margin-top: 1.5%;
         }
         h2.header-title {
             padding:0;
             margin:0;
             text-align: center;
+            font-family: bof;
         }
         hr.header-hr {
             border:0.7px ridge #000000;
@@ -63,7 +72,7 @@
             width: 300px;
             height: 400px;
             display: block;
-            margin:50px auto;
+            margin:5% auto;
         }
 
         {#index.html#}
@@ -71,23 +80,19 @@
             list-style:none;
             padding:0;
             margin:0;
-            margin-bottom: 10px;
+            margin-bottom: 1%;
             height: 40px;
-            {#background-color: #0b0080;#}
         }
         ul.option li {
             float: left;
             list-style:none;
             padding:0;
-            {#margin:0 10px 0 10px;#}
             margin-right: 10px;
-            {#margin-bottom: 10px;#}
-            {#height: 30px;#}
-            {#background-color: #000000;#}
         }
         article {
             height: 20px;
             margin: 0;
+            font-family: srss;
         }
         a.article-name {
             text-align: left;
@@ -106,8 +111,8 @@
 
         {#who.html#}
         div.who-box {
-            {#height: 100px;#}
             border: 1px solid red;
+            font-family: wgn;
         }
         h1.who-h1 {
             margin: 20px;
@@ -115,7 +120,39 @@
             text-align: center;
         }
 
+        div.no-post {
+            color: #000000;
+        }
+
     </style>
+
+    <script>
+        var browser={
+            versions:function(){
+                var u = navigator.userAgent, app = navigator.appVersion;
+                return {
+                    trident: u.indexOf('Trident') > -1,     //IE内核
+                    presto: u.indexOf('Presto') > -1,   //opera内核
+                    webKit: u.indexOf('AppleWebKit') > -1,  //苹果、谷歌内核
+                    gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1,     //火狐内核
+                    mobile: !!u.match(/AppleWebKit.*Mobile.*/),     //是否为移动终端
+                    ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/),    //ios终端
+                    android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1,  //android终端或者uc浏览器
+                    iPhone: u.indexOf('iPhone') > -1 ,  //是否为iPhone或者QQHD浏览器
+                    iPad: u.indexOf('iPad') > -1,   //是否iPad
+                    webApp: u.indexOf('Safari') == -1,  //是否web应该程序，没有头部与底部
+                    weixin: u.indexOf('MicroMessenger') > -1,   //是否微信
+                    qq: u.match(/\sQQ/i) == " qq"   //是否QQ
+                };
+            }(),
+            language:(navigator.browserLanguage || navigator.language).toLowerCase()
+        }
+
+        if(browser.versions.mobile || browser.versions.ios ||
+            browser.versions.android || browser.versions.iPhone || browser.versions.iPad){
+   		        window.location = "{% url 'blog:phone' %}";
+        }
+    </script>
 
 </head>
 
@@ -123,7 +160,7 @@
 <div class="container">
     <header>
             <div class="header-box">
-                    <h2 class="header-title"><a href="{% url 'blog:index' %}">Lcarusd Graffiti</a></h2>
+                    <h2 class="header-title"><a href="{% url 'blog:index' %}">Lcarusd Past Intentions</a></h2>
                     <hr class="header-hr"/>
             </div>
     </header>
