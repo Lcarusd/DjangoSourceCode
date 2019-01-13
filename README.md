@@ -72,24 +72,28 @@ Python==3.5。
 
 ## Django 常用命令
 python manage.py runserver
-<br>
+
 python manage.py makemigrations
-<br>
+python manage.py migrate --run-syncdb
 python manage.py migrate
-<br>
-python manage.py collectstatic
-<br>
-<br>
-python manage.py shell
-<br>
 python manage.py createsuperuser
-<br>
-<br>
+
+python manage.py collectstatic
+
+pip install uwsgi
+uwsgi --ini uwsgi.ini 
+uwsgi --stop uwsgi.pid
+
+
+
+
+
+python manage.py shell
+
 python manage.py flush # 清空数据库
-<br>
+
 python manage.py dbshell # 数据库命令行
-<br>
-<br>
+
 python manage.py changepassword username # 修改 用户密码可以用
 <br>
 <br>
@@ -100,3 +104,13 @@ python manage.py loaddata appname.json
 <br>
 <br>
 python manage.py # 查看更多命令
+
+# t
+http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
+
+uwsgi
+pip install uwsgi
+uwsgi --ini uwsgi.ini 
+uwsgi --stop uwsgi.pid  
+
+gunicorn
