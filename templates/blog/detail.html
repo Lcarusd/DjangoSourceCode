@@ -21,31 +21,15 @@
     <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
 
     <style>
-        @font-face {
-	        font-family: 'srss';
-	        src:url('{% static 'blog/fonts/customize/田氏宋体旧字形.ttf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-        @font-face {
-	        font-family: 'bof';
-	        src:url('{% static 'blog/fonts/customize/Bold-Oldstyle-Figures.ttf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-        @font-face {
-	        font-family: 'wgn';
-	        src:url('{% static 'blog/fonts/customize/Wyue-GutiFangsong-NC.otf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-
         a:hover { color:red; }
-        h3 {
-            font-family: 'Tianshi SRSS', serif;
+        h1, h2, h3, h4, h5, h6 {
+            font-family: STFangsong, Fangsong;
         }
-        article {
+        #entry_header_article {
             margin: 0 10% 0 10%;
+        }
+        .entry-header-title {
+            text-align: center;
         }
 
         {#头部#}
@@ -54,7 +38,6 @@
         }
         header {
             margin: 0 40px 0 40px;
-            {#background-color: #0b0080;#}
         }
         div.header-box {
             margin-top: 15px;
@@ -63,22 +46,31 @@
             padding:0;
             margin:0;
             text-align: center;
-            font-family: bof;
+            font-family: Courier New;
         }
         hr.header-hr {
             border:0.7px ridge #000000;
             margin: 1px;
         }
         div.article-body {
-            font-family: srss;
+            font-family: STFangsong, STFangsong;
         }
         div.article-body p {
-            font-family: srss;
+            font-family: STFangsong, STFangsong;
+        }
+        div.article-body pre {
+            font-family: Verdana;
         }
 
-        h3.entry-header-title {
-            text-align: center;
-            font-family: wgn, Serif
+        {#h5#entry_header_title {#}
+        {#    text-align: center;#}
+        {#    font-family: STSong, SimSun;#}
+        {#}#}
+
+        @media screen and (max-width: 1000px) {
+            body {
+                background-color: #ffffff;
+            }
         }
     </style>
 </head>
@@ -87,7 +79,7 @@
 <div class="container">
     <header>
             <div class="header-box">
-                    <h2 class="header-title"><a href="{% url 'blog:index' %}">Lcarusd Past Intentions</a></h2>
+                    <h2 class="header-title"><a id="header_title" href="{% url 'blog:index' %}">Lcarusd Past Intentions</a></h2>
                     <hr class="header-hr"/>
             </div>
     </header>
@@ -96,13 +88,11 @@
 <div class="content-body">
     <div class="container">
         {% block main %}
-            <article class="post post-{{ post.pk }}">
-                <header class="entry-header">
-                    <h3 class="entry-header-title">{{ post.title }}</h3>
-                    <div class="entry-meta">
+            <article id="entry_header_article" class="post post-{{ post.pk }}">
+                    <h3 id="entry_header_title" class="entry-header-title">{{ post.title }}</h3>
+                    <div id="entry_meta" class="entry-meta">
                         <span>{{ post.show_time }}</span>
                     </div>
-                </header>
                 <div class="article-body">
                     {{ post.body|safe }}
                 </div>
@@ -122,4 +112,23 @@
         </div>
     </div>
 </footer>
+
+<script type="text/javascript">
+    if (window.screen.width < 1000) {
+        // 修改heade内容
+        document.getElementById("header_title").innerHTML="Lcarusd";
+        // 取消两侧外边距
+        var article = document.getElementById('entry_header_article');
+        article.style.marginLeft="0px";
+        article.style.marginRight="0px";
+        // 替换文章title标签
+        var h3Title = document.getElementById('entry_header_title');
+        var childTag = document.getElementById('entry_meta')
+        var h5Title = document.createElement('h5');
+        h5Title.innerHTML = h3Title.innerText;
+        h5Title.style.textAlign="center";
+        h3Title.parentNode.removeChild(h3Title);
+        article.insertBefore(h5Title, childTag)
+    }
+</script>
 </body>
