@@ -21,25 +21,6 @@
     <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
 
     <style>
-        @font-face {
-	        font-family: 'srss';
-	        src:url('{% static 'blog/fonts/customize/田氏宋体旧字形.ttf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-        @font-face {
-	        font-family: 'bof';
-	        src:url('{% static 'blog/fonts/customize/Bold-Oldstyle-Figures.ttf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-        @font-face {
-	        font-family: 'wgn';
-	        src:url('{% static 'blog/fonts/customize/Wyue-GutiFangsong-NC.otf' %}');
-	        font-weight: normal;
-	        font-style: normal;
-        }
-
         {#头部#}
         .container {
             margin-bottom: 1%;
@@ -54,7 +35,7 @@
             padding:0;
             margin:0;
             text-align: center;
-            font-family: bof;
+            font-family: Courier New;
         }
         hr.header-hr {
             border:0.7px ridge #000000;
@@ -92,7 +73,7 @@
         article {
             height: 20px;
             margin: 0;
-            font-family: srss;
+            font-family: STSong, SimSun;
         }
         a.article-name {
             text-align: left;
@@ -111,8 +92,14 @@
 
         {#who.html#}
         div.who-box {
-            border: 1px solid red;
-            font-family: wgn;
+            margin: 0 7% 0 7%;
+            font-family: Courier New;
+        }
+        div.who-box h4 {
+            font-family:  'Lucida Console', Monaco, monospace;;
+        }
+        div.who-box p {
+            font-family: STSong, SimSun;
         }
         h1.who-h1 {
             margin: 20px;
