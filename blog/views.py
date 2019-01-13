@@ -68,5 +68,5 @@ def contact(request):
 
 
 def phone_view(request):
-    post_list = Post.objects.all().order_by("-views")
+    post_list = Post.objects.filter(state=1).order_by("-views")
     return render(request, 'phone.html', context={"post_list":post_list})
