@@ -28,9 +28,6 @@
         #entry_header_article {
             margin: 0 10% 0 10%;
         }
-        .entry-header-title {
-            text-align: center;
-        }
 
         {#头部#}
         .container {
@@ -52,25 +49,75 @@
             border:0.7px ridge #000000;
             margin: 1px;
         }
+        .article-footer {
+            height: 30px;
+        }
+
+        {#重新定义markdown的渲染样式#}
         div.article-body {
             font-family: STFangsong, STFangsong;
         }
+        h1 {
+            font-size: 40px;
+            font-weight: 900;
+        }
+        h2 {
+            font-family: STKaiti;
+            font-size: 33px;
+        }
+        h3 {
+            font-family: STKaiti;
+            font-size: 26px;
+        }
+        h4 {
+            font-family: STKaiti;
+            font-size: 20px;
+        }
+        h5 {
+            font-size: 14px;
+        }
+        h6 {
+            font-size: 14px;
+            color: #B7B7B7;
+        }
+        blockquote {
+            font-size: 13px;
+        }
+        div.article-body pre span.o {
+            {#color: #ffffff;#}
+            font-weight: normal;
+        }
+        div.article-body pre span.k {
+            color: #0b0080;
+            font-weight: normal;
+        }
+        div.article-body pre span.c1 {
+            font-weight: 200;
+            font-size: 10px;
+        }
+        div.article-body pre span.mf, span.mi {
+            {#color: green;#}
+            font-weight: 500;
+        }
+        div.article-body pre span.kn {
+            color: #61efef;
+        }
+        div.article-body pre span {}
         div.article-body p {
             font-family: STFangsong, STFangsong;
         }
         div.article-body pre {
-            font-family: Verdana;
+            font-family: Courier New;
         }
-
-        {#h5#entry_header_title {#}
-        {#    text-align: center;#}
-        {#    font-family: STSong, SimSun;#}
-        {#}#}
 
         @media screen and (max-width: 1000px) {
             body {
                 background-color: #ffffff;
             }
+        }
+        .entry-header-title {
+            text-align: center;
+            line-height: normal;
         }
     </style>
 </head>
@@ -96,6 +143,7 @@
                 <div class="article-body">
                     {{ post.body|safe }}
                 </div>
+                <div class="article-footer"></div>
             </article>
         {% endblock main %}
     </div>
@@ -124,11 +172,12 @@
         // 替换文章title标签
         var h3Title = document.getElementById('entry_header_title');
         var childTag = document.getElementById('entry_meta')
-        var h5Title = document.createElement('h5');
-        h5Title.innerHTML = h3Title.innerText;
-        h5Title.style.textAlign="center";
+        var h6Title = document.createElement('h5');
+        h6Title.innerHTML = h3Title.innerText;
+        h6Title.style.textAlign="center";
+        h6Title.style.color="black";
         h3Title.parentNode.removeChild(h3Title);
-        article.insertBefore(h5Title, childTag)
+        article.insertBefore(h6Title, childTag)
     }
 </script>
 </body>
