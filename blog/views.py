@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.utils.text import slugify
 
-from .models import Post, Category
+from .models import Post, Category, Seek
 
 # https://code.ziqiangxuetang.com/django/django-queryset-api.html
 # https://www.jianshu.com/p/923b89ec18eb
@@ -70,3 +70,7 @@ def contact(request):
 def phone_view(request):
     post_list = Post.objects.filter(state=1).order_by("-views")
     return render(request, 'phone.html', context={"post_list":post_list})
+
+def seek_view(request):
+    seeks = Seek.objects.all().order_by("-show_time")
+    return render(request, 'option/seek.html', context={"seeks": seeks})
