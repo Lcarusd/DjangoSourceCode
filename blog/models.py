@@ -42,6 +42,7 @@ class Post(models.Model):
         default=1,
         verbose_name='文章状态',
     )
+    image = models.ImageField(default='', upload_to='img/%Y/%m', verbose_name='图片', max_length=900, null=True, blank=True)
 
     def __str__(self):
         return self.title
