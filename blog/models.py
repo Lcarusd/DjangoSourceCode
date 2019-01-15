@@ -11,6 +11,15 @@ def get_foo():
     return User.objects.get_or_create(id=1)[0].id
 
 
+@python_2_unicode_compatible
+class Seek(models.Model):
+    name = models.CharField(verbose_name=u'发布人', max_length=100)
+    content = models.TextField(verbose_name='内容')
+    show_time = models.DateTimeField(verbose_name='显示时间')
+    created_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    modified_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
+
+
 # python_2_unicode_compatible 装饰器用于兼容 Python2
 @python_2_unicode_compatible
 class Category(models.Model):
