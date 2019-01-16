@@ -74,19 +74,23 @@ Python==3.5。
 python manage.py runserver
 
 python manage.py makemigrations
-python manage.py migrate --run-syncdb
 python manage.py migrate
-python manage.py createsuperuser
 
 python manage.py collectstatic
 
-pip install uwsgi
+python manage.py migrate --run-syncdb
+python manage.py migrate --fake blog
+
+python manage.py createsuperuser
+
+
+
+##### uwsgi
 uwsgi --ini uwsgi.ini 
 uwsgi --stop uwsgi.pid
 
-
-
-
+##### create requirements.txt file
+pip freeze > requirements.txt
 
 python manage.py shell
 
@@ -107,10 +111,3 @@ python manage.py # 查看更多命令
 
 # t
 http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
-
-uwsgi
-pip install uwsgi
-uwsgi --ini uwsgi.ini 
-uwsgi --stop uwsgi.pid  
-
-gunicorn
