@@ -83,3 +83,22 @@ class Post(models.Model):
     def increase_views(self):
         self.views += 1
         self.save(update_fields=['views'])
+
+
+@python_2_unicode_compatible
+class RequestInfo(models.Model):
+    # TODO：ip定位误差范围缩小-geoip
+    ip_address = models.GenericIPAddressField(verbose_name=u'IP地址')
+    area = models.CharField(verbose_name=u'用户位置', max_length=250, default='', null=True, blank=True)
+    operator = models.CharField(verbose_name=u'运营商', max_length=250, default='', null=True, blank=True)
+    request_time = models.DateTimeField(verbose_name=u'请求时间', auto_now_add=True)
+    request_path = models.CharField(verbose_name=u'请求路径', max_length=250, default='', null=True, blank=True)
+    device = models.CharField(verbose_name=u'设备品牌', max_length=250, default='', null=True, blank=True)
+    device_model = models.CharField(verbose_name=u'设备型号', max_length=250, default='', null=True, blank=True)
+    system = models.CharField(verbose_name=u'操作系统', max_length=250, default='', null=True, blank=True)
+    system_version = models.CharField(verbose_name=u'操作系统版本', max_length=250, default='', null=True, blank=True)
+    browser = models.CharField(verbose_name=u'浏览器', max_length=250, default='', null=True, blank=True)
+    browser_version = models.CharField(verbose_name=u'浏览器版本', max_length=250, default='', null=True, blank=True)
+    ua = models.CharField(verbose_name=u'请求UA', max_length=250, default='', null=True, blank=True)
+    created_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    modified_time = models.DateTimeField(verbose_name='修改时间', auto_now=True)
