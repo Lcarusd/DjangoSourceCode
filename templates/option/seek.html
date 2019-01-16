@@ -85,7 +85,7 @@
 <body>
     <div class="container">
         <header>
-            <div class="header-box">
+            <div class="header-box" id="seek-head-box">
                     <h2 class="header-title"><a href="{% url 'blog:index' %}">Lcarusd Past Intentions</a></h2>
                     <hr class="header-hr"/>
             </div>
@@ -113,6 +113,29 @@
 </p>
 
 <script src="{% static 'blog/js/script.js' %}"></script>
+
+<script>
+    if (window.screen.width < 1000) {
+        // 取消两侧外边距
+        var seekBox = document.getElementsByClassName("seek-box");
+        seekBox[0].style.marginLeft="5px";
+        seekBox[0].style.marginRight="5px";
+
+        // 替换文章title标签
+        var headBox = document.getElementById('seek-head-box');
+
+        var h2Title = document.getElementsByClassName('header-title');
+        var childTag = document.getElementsByClassName('header-hr');
+
+        var h5Title = document.createElement('h4');
+        h5Title.innerHTML = "Lcarusd";
+        h5Title.style.textAlign="center";
+        h5Title.style.color="black";
+        h5Title.style.fontFamily=" Courier New";
+        h2Title[0].parentNode.removeChild(h2Title[0]);
+        headBox.insertBefore(h5Title, childTag[0]);
+    }
+</script>
 
 </body>
 </html>
