@@ -108,7 +108,7 @@ class Sports(models.Model):
     step = models.IntegerField(verbose_name='步数')
     km = models.FloatField(verbose_name='运动公里数', null=True, blank=True, default=0.0)
     kcal = models.FloatField(verbose_name='消耗卡路里', null=True, blank=True, default=0.0)
-    start_time = models.DateTimeField(verbose_name='运动开始时间')
+    start_time = models.DateTimeField(verbose_name='运动开始时间', unique=True)
     end_time = models.DateTimeField(verbose_name='运动结束时间')
     data_source = models.CharField(verbose_name='数据源', max_length=40)
     created_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
