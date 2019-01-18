@@ -17,4 +17,5 @@ urlpatterns = [
     # 处理 media 信息，用于图片获取
     url(r'^media/(?P<path>.*)', serve, {"document_root":MEDIA_ROOT}),
     url(r'^seek/$', views.seek_view, name='seek'),
+    url(r'^statistics/$', views.statistics_view, name='statistics'),
 ]
