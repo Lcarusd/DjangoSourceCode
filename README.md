@@ -83,6 +83,8 @@ python manage.py migrate --fake blog
 
 python manage.py createsuperuser
 
+root@188.131.177.190:/root/
+
 
 
 ##### uwsgi
