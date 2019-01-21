@@ -7,6 +7,7 @@ class PostAdmin(admin.ModelAdmin):
     list_display = ['title', 'show_time', 'category', 'author', 'state_color']
     list_filter = ['show_time', 'category', 'state']
     search_fields = ('title',)
+    ordering = ['-show_time', ]
     list_per_page = 10000
 
 class SeekAdmin(admin.ModelAdmin):
