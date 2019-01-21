@@ -141,7 +141,7 @@ class PostDetailView(DetailView):
 
 class CategoryView(ListView):
     def get(self, request, pk):
-        category_post = Category.objects.get(pk=int(pk)).category.all().filter(state__gt=0)
+        category_post = Category.objects.get(pk=int(pk)).category.all().filter(state__gt=0).order_by("-show_time")
         get_ip_info_to_class(request)
         return render(request, 'blog/index.html', context={'post_list': category_post})
 
