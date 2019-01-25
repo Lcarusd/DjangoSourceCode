@@ -73,9 +73,18 @@ WSGI_APPLICATION = 'blogproject.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # },
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blogproject',        #数据库名
+        'USER':'root',           #用户名
+        'PASSWORD':'19950925',     #密码
+        'HOST':'127.0.0.1',      #本机地址
+        'PORT':'3306',           #端口
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
