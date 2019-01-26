@@ -111,7 +111,7 @@ class IndexView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data(**kwargs)
-        context["post_list"] = Post.objects.filter(state=1).order_by("-views")
+        context["post_list"] = Post.objects.filter(state=1).exclude(category__name='闲来读书').order_by("-views")
         get_ip_info_to_class(self.request)
         return context
 
@@ -149,7 +149,7 @@ class CategoryView(ListView):
 @get_ip_info_to_func
 def category_list(request):
     category_list = Category.objects.all()
-    return render(request, 'option/category.html', context={'category_list': category_list})
+    return render(request, 'option/category.html', context={'category_list': category_sort})
 
 
 @get_ip_info_to_func
