@@ -172,7 +172,9 @@ def category_list(request):
             category_fixed.insert(8, category)
         else:
             category_disorder.append(category)
-    return render(request, 'option/category.html', context={'category_list': category_fixed.extend(category_disorder)})
+    category_fixed.extend(category_disorder)
+
+    return render(request, 'option/category.html', context={'category_list': category_fixed})
 
 
 def category_list_sort(category_list):
