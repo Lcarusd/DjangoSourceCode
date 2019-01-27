@@ -148,8 +148,36 @@ class CategoryView(ListView):
 
 @get_ip_info_to_func
 def category_list(request):
-    category_list = Category.objects.all()
-    return render(request, 'option/category.html', context={'category_list': category_sort})
+    category_list = list(Category.objects.all())
+
+    category_fixed, category_disorder = [], []
+    for category in category_list_sort(category_list):
+        if category.name == 'Python之禅':
+            category_fixed.insert(0, category)
+        elif category.name == 'SQL之美':
+            category_fixed.insert(1, category)
+        elif category.name == '技能新知':
+            category_fixed.insert(2, category)
+        elif category.name == '编程珠玑':
+            category_fixed.insert(3, category)
+        elif category.name == '题精于勤':
+            category_fixed.insert(4, category)
+        elif category.name == '效率工具':
+            category_fixed.insert(5, category)
+        elif category.name == '职场记闻':
+            category_fixed.insert(6, category)
+        elif category.name == '文以载道':
+            category_fixed.insert(7, category)
+        elif category.name == '闲来读书':
+            category_fixed.insert(8, category)
+        else:
+            category_disorder.append(category)
+    return render(request, 'option/category.html', context={'category_list': category_fixed.extend(category_disorder)})
+
+
+def category_list_sort(category_list):
+    for category in category_list:
+        yield category
 
 
 @get_ip_info_to_func
