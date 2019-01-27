@@ -70,7 +70,35 @@ Python==3.5。
    使用第 5 步创建的后台管理员账户登录
 
 
-## Django 常用命令
+#### 导出数据 导入数据
+python manage.py dumpdata appname > appname.json
+python manage.py loaddata appname.json 
+
+#### 生成requirements.txt文件
+pip freeze > requirements.txt
+
+#### shell命令行
+python manage.py shell
+
+#### 清空数据库
+python manage.py flush 
+
+#### 数据库命令行
+python manage.py dbshell 
+
+#### 修改用户密码
+python manage.py changepassword username 
+
+#### 查看更多命令
+python manage.py 
+
+
+##### uwsgi启动关闭命令
+uwsgi --ini uwsgi.ini 
+uwsgi --stop uwsgi.pid
+
+
+#### 常用命令
 python manage.py runserver
 
 python manage.py makemigrations
@@ -86,30 +114,3 @@ python manage.py createsuperuser
 root@188.131.177.190:/root/
 
 
-
-##### uwsgi
-uwsgi --ini uwsgi.ini 
-uwsgi --stop uwsgi.pid
-
-##### create requirements.txt file
-pip freeze > requirements.txt
-
-python manage.py shell
-
-python manage.py flush # 清空数据库
-
-python manage.py dbshell # 数据库命令行
-
-python manage.py changepassword username # 修改 用户密码可以用
-<br>
-<br>
-**导出数据 导入数据**<br>
-python manage.py dumpdata appname > appname.json
-<br>
-python manage.py loaddata appname.json 
-<br>
-<br>
-python manage.py # 查看更多命令
-
-# t
-http://www.ruanyifeng.com/blog/2016/03/systemd-tutorial-commands.html
