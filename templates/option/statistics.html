@@ -21,7 +21,6 @@
     <script src="{% static 'blog/js/modernizr.custom.js' %}"></script>
     <!-- 引入 echarts.js -->
     <script src="{% static 'blog/js/echarts.js' %}"></script>
-    <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
     <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
@@ -33,14 +32,13 @@
 </head>
 <body>
     <!-- 人生轨迹图 -->
-    <div id="geo" style="height: 100%"></div>
-    <script src="{% static 'blog/js/life-migration-map.js' %}"></script>
+    <!-- 替换成2018读书记录 -->
+{#    <div id="geo" style="height: 100%"></div>#}
+{#    <script src="{% static 'blog/js/life-migration-map.js' %}"></script>#}
 
     <!-- 2018年步数统计图 -->
     <div id="sports" style="height: 100%"></div>
-    <script type="text/javascript">
-        var data = {{ sport_day_info|safe }};
-    </script>
+    <script type="text/javascript">var data = {{ sport_day_info|safe }};</script>
     <script src="{% static 'blog/js/2018-sport-day-info.js' %}"></script>
 </body>
 </html>
