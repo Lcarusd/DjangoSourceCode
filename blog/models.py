@@ -13,7 +13,7 @@ def get_foo():
 
 @python_2_unicode_compatible
 class Seek(models.Model):
-    name = models.CharField(verbose_name=u'发布人', max_length=100)
+    name = models.CharField(verbose_name=u'发布人', max_length=100, default='Lcarusd', editable=False)
     content = models.TextField(verbose_name='内容')
     show_time = models.DateTimeField(verbose_name='显示时间')
     created_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
