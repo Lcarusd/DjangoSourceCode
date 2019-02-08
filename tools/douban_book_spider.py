@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-"""豆瓣读书记录爬虫"""
+"""豆瓣读书记录爬虫(未完成)"""
 
 import time
 import queue
